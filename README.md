@@ -12,6 +12,7 @@
 Download the source, then `make` and `./carm/carm`. It will start on port 4200.
 
 The `carm` folder contains the entire `CaRM` installation, including the database and config file.
+It also contains the static frontend assets.
 
 # Internals
 
@@ -28,8 +29,12 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 
 	{
 		port: 4200,
-		required-fields: ["telephone", "email"],
-		forbidden-fields: ["fakebody"]
+		contactRequiredFields: ["telephone", "email"],
+		contactForbiddenFields: ["fakebody"],
+		mail: "smtp",
+		smptServer: "smpt.example.com",
+		smtpUser: "foobar",
+		smtpPass: "hunter2"
 	}
 
 # API
@@ -38,18 +43,36 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 
 	POST /carm/v1/api/auth
 	Authorization: Basic user:pass
-	Returns:
-	{ "session-id": string }
+	Returns: 200 OK or 403 FORBIDDEN
+	{ sessionId: string }
 	
-Where `user:pass` is base64 encoded. The `session-id` is provided in the `Authorization` header of the
-following authorized requests (as-is). 
+Where `user:pass` is base64 encoded. The `session-id` is returned base64 encoded and can be used for `Basic`
+authentication as-is. 
 
 All the following requests are assumed to be authorized unless stated otherwise. In case of an authorization
 failure, `403 FORBIDDEN` is thrown.
 
+To invalidate a session:
+
+	DELETE /carm/v1/api/auth
+	Returns: 204 NO CONTENT
+	
+Session are invalidated after 12 hours normally.
+
+## Users
+
+Get current user:
+
+	GET /carm/v1/api/user
+	Returns: 200 OK, user object
+	Example: {
+		username: "foo",
+		email: "bar@example.com"
+	}
+
 ## Contact Requests
 
-Create a new contact request:
+Create a new contact request (does not require authentication):
 
 	POST /carm/v1/api/contact-request
 	Accepts: a string map (i.e. any flat json object containing only strings)
@@ -65,20 +88,30 @@ set (in which case `204` would be returned).
 Get contact requests:
 
 	GET /carm/v1/api/contact-request
-	Returns: array of contact requests
+	Returns: 200 OK, array of contact requests
 	Example: [ 
-		{id: 1, name:"foo", message:"bar", timestamp: 1608770775}, 
-		{id: 2, message: "foobar", timestamp: 1608770775} 
+		{id: 1, name:"foo", message:"bar", seen: true, timestamp: 1608770775}, 
+		{id: 2, message: "foobar", seen: false, timestamp: 1608770775} 
 	]
 	
-Contact requests are string maps except for `id` and `timestamp`, which are `number`s. `id`s are guaranteed
-to be unique and not necessarily sequential.
+Contact requests are objects which contain the original string map, in addition to:
+
+* `id` and `timestamp`: numbers. `id`s are guaranteed to be unique and not necessarily sequential.
+* `seen`: boolean. Used in frontend.
+
+To set the `seen` field in contact requests to true/false:
+
+	PUT /carm/v1/api/contact-request/:id/seen
+	Returns: 204 NO CONTENT
+	      or 404 NOT FOUND
+	DELETE /carm/v1/api/contact-request/:id/seen
 
 Get specific contact request:
 
 	GET /carm/v1/api/contact-request/:id
-	Returns: contact request
-	Example: {id: 1, name:"foo", message:"bar", timestamp: 1608770775}
+	Returns: 200 OK, contact request
+	      or 404 NOT FOUND
+	Example: {id: 1, name:"foo", message:"bar", seen:true, timestamp: 1608770775}
 
 ### Required and forbidden fields
 

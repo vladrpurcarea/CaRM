@@ -1,5 +1,5 @@
 ;;;; package.lisp
 
 (defpackage #:carm
-  (:use #:cl)
+  (:use #:cl #:easy-routes)
   (:export main))
