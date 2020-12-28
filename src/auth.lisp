@@ -59,6 +59,13 @@
 	  id))
     (db-no-result nil)))
 
+(defun get-userid-by-valid-session (sessionid)
+  (let ((res (db-fetch-one "SELECT userid FROM sessions where enabled = 1 AND sessionid = ? AND expires_at > ?"
+			   :args (list sessionid (get-universal-time))
+			   :error-more-results t)))
+    (when res
+      (getf res :|userid|))))
+
 (defun create-session (userid)
   (let* ((cur-time (get-universal-time))
 	 (expiration-time (+ cur-time
@@ -72,13 +79,6 @@
 		   expiration-time
 		   1))
     sessionid))
-
-(defun get-userid-by-valid-session (sessionid)
-  (let ((res (db-fetch-one "SELECT userid FROM sessions where enabled = 1 AND sessionid = ? AND expires_at > ?"
-			   :args (list sessionid (get-universal-time))
-			   :error-more-results t)))
-    (when res
-      (getf res :|userid|))))
 
 (defun invalidate-session (sessionid)
   (db-exec "UPDATE sessions SET enabled = 0, expires_at = ? WHERE sessionid = ?"

@@ -3,7 +3,7 @@
 `CaRM` is a light CRM system. It:
 
 * keeps track of contact requests from customers
-* provides spam protection
+* provides spam protection with a bayesian filter and honeypot fields
 * sends email notifications
 * runs a webserver to expose data to internal users (with authentication)
 
@@ -70,7 +70,7 @@ To invalidate a session:
 	DELETE /carm/v1/api/auth
 	Returns: 204 NO CONTENT
 	
-Session are invalidated after 12 hours normally.
+Session are invalidated after 48 hours normally.
 
 ## Users
 
@@ -80,7 +80,8 @@ Get current user:
 	Returns: 200 OK, user object
 	Example: {
 		username: "foo",
-		email: "bar@example.com"
+		email: "bar@example.com",
+		createdAt: 3818107279
 	}
 
 ## Contact Requests
@@ -96,16 +97,18 @@ Create a new contact request (does not require authentication):
 	Returns: 204 NO CONTENT or 400 BAD REQUEST
 	
 `400` will only be thrown if one of the required fields is not set, but not if one of the forbidden fields is
-set (in which case `204` would be returned).
+set (in which case `204` would be returned and the data discarded).
 
 Get contact requests:
 
-	GET /carm/v1/api/contact-request
-	Returns: 200 OK, array of contact requests
-	Example: [ 
-		{id: 1, name:"foo", message:"bar", seen: true, timestamp: 1608770775}, 
-		{id: 2, message: "foobar", seen: false, timestamp: 1608770775} 
-	]
+	GET /carm/v1/api/contact-request?offset=<integer>&limit=<integer>
+	Returns: 200 OK, objects containing array of contact requests
+	Example: {
+		contactRequests: [ 
+		{id: 1, name:"foo", message:"bar", seen: true, timestamp: 3818107279}, 
+		{id: 2, message: "foobar", seen: false, timestamp: 3818107279} 
+		]
+	}
 	
 Contact requests are objects which contain the original string map, in addition to:
 
@@ -118,13 +121,15 @@ To set the `seen` field in contact requests to true/false:
 	Returns: 204 NO CONTENT
 	      or 404 NOT FOUND
 	DELETE /carm/v1/api/contact-request/:id/seen
+	
+`offset` and `limit` are used for pagination and optional.
 
 Get specific contact request:
 
 	GET /carm/v1/api/contact-request/:id
 	Returns: 200 OK, contact request
 	      or 404 NOT FOUND
-	Example: {id: 1, name:"foo", message:"bar", seen:true, timestamp: 1608770775}
+	Example: {id: 1, name:"foo", message:"bar", seen:true, timestamp: 3818107279}
 
 ### Required and forbidden fields
 

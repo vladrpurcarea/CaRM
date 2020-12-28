@@ -22,13 +22,26 @@
 (defun json-symbol-key-encoder (key)
   (str:camel-case (str:downcase (string key))))
 (setf yason:*symbol-key-encoder* #'json-symbol-key-encoder)
-(defun to-json (o)
+
+(defun encode-keys-to-strings (list)
+  (mapcar (lambda (x)
+	    (typecase x
+	      (keyword (json-symbol-key-encoder x))
+	      (otherwise x)))
+	  list))
+
+(defun to-json (o &optional format)
   (with-output-to-string (json)
-    (typecase o
-      (cons (if (listp (car o))
-		(yason:encode-alist o json)
-		(yason:encode-plist o json)))
-      (otherwise (yason:encode o json)))))
+    (cond
+      ((eq format :alist) (yason:encode-alist o json))
+      ((eq format :plist) (yason:encode-plist o json))
+      ((eq format :ht) (yason:encode o json))
+      (t
+       (typecase o
+	 (cons (if (listp (car o))
+		   (yason:encode-alist o json)
+		   (yason:encode-plist o json)))
+	 (otherwise (yason:encode o json)))))))
 
 (defun get-basic-auth-header ()
   (let ((header (hunchentoot:header-in* :authorization)))
@@ -46,6 +59,10 @@
 (defun http-204-no-content ()
   (setf (hunchentoot:return-code*) hunchentoot:+http-no-content+)
   "")
+
+(defun http-400-bad-request (&optional (content ""))
+  (setf (hunchentoot:return-code*) hunchentoot:+http-bad-request+)
+  content)
 
 (defun http-403-forbidden (&optional (content ""))
   (setf (hunchentoot:return-code*) hunchentoot:+http-forbidden+)

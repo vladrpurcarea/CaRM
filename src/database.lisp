@@ -24,6 +24,14 @@
     enabled INTEGER NOT NULL,
     FOREIGN KEY(userid) REFERENCES users(id)
   );")
+(defvar *contact-requests-table-init-query*
+  "CREATE TABLE contact_requests (
+    id INTEGER PRIMARY KEY,
+    data TEXT NOT NULL,
+    seen INTEGER NOT NULL,
+    spam INTEGER NOT NULL,
+    timestamp INTEGER NOT NULL
+  );")
 
 (defvar *master-table-init-query*
   (format nil "CREATE TABLE ~A (id INTEGER PRIMARY KEY);" *db-master-table-name*))
@@ -66,11 +74,13 @@
 	      :args (list *db-master-table-name*))))
     (when (not (schema-initialized-p))
       (db-exec *users-table-init-query*)
-      (db-exec *master-table-init-query*)
-      (db-exec *sessions-table-init-query*))))
+      (db-exec *contact-requests-table-init-query*)
+      (db-exec *sessions-table-init-query*)
+      (db-exec *master-table-init-query*))))
 
 (defun drop-schema ()
   (ignore-errors
    (db-exec "DROP TABLE IF EXISTS users;")
    (db-exec "DROP TABLE IF EXISTS carm_master;")
-   (db-exec "DROP TABLE IF EXISTS sessions;")))
+   (db-exec "DROP TABLE IF EXISTS sessions;")
+   (db-exec "DROP TABLE IF EXISTS contact_requests;")))

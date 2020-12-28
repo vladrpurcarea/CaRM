@@ -11,11 +11,14 @@
 	       #:cl-pass
 	       #:str
 	       #:qbase64
-	       #:secure-random)
+	       #:secure-random
+	       #:alexandria)
   :components ((:file "package")
+	       (:file "src/config")
 	       (:file "src/server")
 	       (:file "src/database")
 	       (:file "src/auth")
+	       (:file "src/contact-requests")
 	       (:file "src/carm"))
   :build-operation "program-op"
   :build-pathname "carm/carm"
