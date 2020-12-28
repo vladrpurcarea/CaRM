@@ -3,6 +3,7 @@
 (in-package #:carm)
 
 (defvar *conn*)
+(defvar *db-filename* #P"carm.sqlite3")
 (defvar *db-master-table-name* "carm_master")
 (defvar *users-table-init-query*
   "CREATE TABLE users (

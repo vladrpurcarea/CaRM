@@ -35,13 +35,16 @@
     (cond
       ((eq format :alist) (yason:encode-alist o json))
       ((eq format :plist) (yason:encode-plist o json))
-      ((eq format :ht) (yason:encode o json))
+      ((eq format :hash-table) (yason:encode o json))
       (t
        (typecase o
 	 (cons (if (listp (car o))
 		   (yason:encode-alist o json)
 		   (yason:encode-plist o json)))
 	 (otherwise (yason:encode o json)))))))
+
+(defun from-json (stream &optional (format :hash-table))
+  (yason:parse stream :object-as format))
 
 (defun get-basic-auth-header ()
   (let ((header (hunchentoot:header-in* :authorization)))

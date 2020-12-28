@@ -31,7 +31,7 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 		port: 4200,
 		contactRequiredFields: ["telephone", "email"],
 		contactForbiddenFields: ["fakebody"],
-		mail: "smtp",
+		mailType: "smtp",
 		smptServer: "smpt.example.com",
 		smtpUser: "foobar",
 		smtpPass: "hunter2"
