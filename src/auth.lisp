@@ -21,6 +21,11 @@
   (invalidate-session (get-basic-auth-header))
   (http-204-no-content))
 
+(defroute get-user ("/carm/api/v1/user" :method :GET
+					:decorators (@auth @json-out))
+    ()
+  (to-json (get-user-by-id (@userid))))
+
 ;;; INTERNAL
 
 (defun create-user (username unhashed-pass &key (email nil))
@@ -35,6 +40,11 @@
 			  time
 			  time)))
       (error "Could not create user"))))
+
+(defun get-user-by-id (userid)
+  (db-fetch-one "SELECT username, email, created_at FROM users where id = ?;"
+		:args (list userid)
+		:error-more-results t))
 
 (defun get-userid-by-user-pass (username unhashed-pass)
   (handler-case
