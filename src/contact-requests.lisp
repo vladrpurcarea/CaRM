@@ -26,7 +26,13 @@
 (defroute get-contact-request-route ("/carm/api/v1/contact-request" :method :GET
 								    :decorators (@auth @json-out))
     (&get offset limit)
-  (to-json (alist-hash-table `(("contactRequests" . ,(get-contact-requests (or offset 0) (or limit 100)))))))
+  (labels ((parse (val default)
+	     (if val
+		 (parse-integer val)
+		 default)))
+    (to-json (alist-hash-table `(("contactRequests"
+				  . ,(get-contact-requests (parse offset 0)
+							   (parse limit 100))))))))
 
 ;;; INTERNAL
 
