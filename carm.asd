@@ -10,7 +10,8 @@
 	       #:cl-dbi
 	       #:cl-pass
 	       #:str
-	       #:qbase64)
+	       #:qbase64
+	       #:secure-random)
   :components ((:file "package")
 	       (:file "src/server")
 	       (:file "src/database")
