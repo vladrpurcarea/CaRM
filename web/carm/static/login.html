@@ -3,7 +3,7 @@
 	<title>CaRM</title>
 	<link rel="stylesheet" href="/carm/static/style.css" />
 	<script>
-	 function sendForm() {
+	  function sendForm() {
 	     var username = document.getElementById("username-input").value;
 	     var password = document.getElementById("password-input").value;
 	     var xhr = new XMLHttpRequest();
@@ -18,7 +18,7 @@
 		 console.log("Error during XHR request");
 	     }
 	     xhr.send(null);
-	 }
+	  }
 	</script>
     </head>
     <body>
@@ -27,13 +27,24 @@
 	    <form id="loginform">
 		<div id="loginformcontainer" >
 
-		    <input id="username-input" type="text" placeholder="Username" name="username" required>
+		    <input class="inputfield" id="username-input" type="text" placeholder="Username" name="username" required>
 		    
-		    <input id="password-input" type="password" placeholder="Password" name="password" required>
+		    <input class="inputfield" id="password-input" type="password" placeholder="Password" name="password" required>
 		    
 		    <button type="button" id="formbutton" onclick="sendForm();">Login</button>
 		</div>
 	    </form>
 	</div>
+	<script>
+	  function enterListener(event) {
+	      if (event.key === "Enter") {
+		  event.preventDefault();
+		  sendForm();
+	      }
+	  }
+	  
+	  document.getElementById("username-input").addEventListener("keydown", enterListener);
+	  document.getElementById("password-input").addEventListener("keydown", enterListener);
+	</script>
     </body>
 </html>
