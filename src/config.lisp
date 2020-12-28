@@ -2,5 +2,6 @@
 
 (in-package #:carm)
 
-(defvar *cr-forbidden-fields* '("forbid"))
-(defvar *cr-required-fields* '("telephone"))
+(defvar *cr-forbidden-fields* '())
+(defvar *cr-required-fields* '())
+

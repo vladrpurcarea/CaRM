@@ -12,7 +12,8 @@
 	       #:str
 	       #:qbase64
 	       #:secure-random
-	       #:alexandria)
+	       #:alexandria
+	       #:bordeaux-threads)
   :components ((:file "package")
 	       (:file "src/config")
 	       (:file "src/server")
