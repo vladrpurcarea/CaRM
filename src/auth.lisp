@@ -4,8 +4,10 @@
 
 ;;; WEB
 
-(defroute post-auth ("/carm/api/v1/auth" :method :POST
-					 :decorators (@json-out))
+(defroute post-auth
+    ("/carm/api/v1/auth"
+     :method :POST
+     :decorators (@json-out))
     ()
   (multiple-value-bind (username password)
       (hunchentoot:authorization)
@@ -16,7 +18,9 @@
 	      (to-json `(("sessionId" . ,(create-session userid))))
 	      (http-403-forbidden))))))
 
-(defroute delete-auth ("/carm/api/v1/auth" :method :DELETE)
+(defroute delete-auth
+    ("/carm/api/v1/auth"
+     :method :DELETE)
     ()
   (invalidate-session (get-basic-auth-header))
   (http-204-no-content))

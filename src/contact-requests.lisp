@@ -4,9 +4,10 @@
 
 ;;; WEB
 
-(defroute post-contact-request ("/carm/api/v1/contact-request"
-				:method :POST
-				:decorators (@json))
+(defroute post-contact-request
+    ("/carm/api/v1/contact-request"
+     :method :POST
+     :decorators (@json))
     ()
   (labels ((forbidden-fields-p ()
 	     (loop for k being the hash-keys of (@json-body)
@@ -24,9 +25,10 @@
       ((create-contact-request (to-json (@json-body)))
        (http-204-no-content)))))
 
-(defroute get-contact-requests-route ("/carm/api/v1/contact-request"
-				      :method :GET
-				      :decorators (@auth @json-out))
+(defroute get-contact-requests-route
+    ("/carm/api/v1/contact-request"
+     :method :GET
+     :decorators (@auth @json-out))
     (&get offset limit)
   (labels ((parse (val default)
 	     (if val
@@ -38,18 +40,20 @@
 	 . ,(get-contact-requests (parse offset 0)
 				  (parse limit 100))))))))
 
-(defroute get-contact-request-route ("/carm/api/v1/contact-request/:id"
-				     :method :GET
-				     :decorators (@auth @json-out))
+(defroute get-contact-request-route
+    ("/carm/api/v1/contact-request/:id"
+     :method :GET
+     :decorators (@auth @json-out))
     ()
   (if-let ((contact-request (get-contact-request id)))
     (to-json contact-request)
     (http-404-not-found)))
 
 
-(defroute put-contact-request-seen-route ("/carm/api/v1/contact-request/:id/seen"
-					  :method :PUT
-					  :decorators (@auth))
+(defroute put-contact-request-seen-route
+    ("/carm/api/v1/contact-request/:id/seen"
+     :method :PUT
+     :decorators (@auth))
     ()
   (if (set-contact-request-seen id t)
       (http-204-no-content)
@@ -57,9 +61,10 @@
 
 
 
-(defroute delete-contact-request-seen-route ("/carm/api/v1/contact-request/:id/seen"
-					  :method :DELETE
-					  :decorators (@auth))
+(defroute delete-contact-request-seen-route
+    ("/carm/api/v1/contact-request/:id/seen"
+     :method :DELETE
+     :decorators (@auth))
     ()
   (if (set-contact-request-seen id nil)
       (http-204-no-content)
