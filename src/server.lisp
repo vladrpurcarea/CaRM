@@ -67,3 +67,7 @@
 (defun http-403-forbidden (&optional (content ""))
   (setf (hunchentoot:return-code*) hunchentoot:+http-forbidden+)
   content)
+
+(defun http-404-not-found (&optional (content ""))
+  (setf (hunchentoot:return-code*) hunchentoot:+http-not-found+)
+  content)
