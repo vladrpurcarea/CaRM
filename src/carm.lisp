@@ -2,14 +2,12 @@
 
 (in-package #:carm)
 
-(defun bind-routes ()
-  (defroute hello ("/hi2" :method :POST :decorators (@json)) ()
-    (with-output-to-string (json)
-      (yason:encode-alist '(("name" . "vlad"))))))
+(defvar *server* (make-server))
+
+(defroute hello ("/get" :method :GET) ()
+  (format nil "~S" *default-pathname-defaults*))
 
 (defun main ()
-  (let ((server (make-server)))
-    (bind-routes)
-    (hunchentoot:start server)
-    (read)
-    (hunchentoot:stop server)))
+  (hunchentoot:start *server*)
+  (read)
+  (hunchentoot:stop *server*))

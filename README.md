@@ -14,6 +14,16 @@ Download the source, then `make` and `./carm/carm`. It will start on port 4200.
 The `carm` folder contains the entire `CaRM` installation, including the database and config file.
 It also contains the static frontend assets.
 
+The install script should autodetermine the install location and ask for confirmation . Still, if
+that is not successful, it can be modified in `carm.conf`:
+
+	{
+		installLocation: "/home/user/carm"
+		...
+	}
+	
+See the `Config` section below.
+
 # Internals
 
 `CaRM` runs a Hunchentoot server that serves the JSON API and the static frontend assets. 
@@ -28,6 +38,7 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 `carm.conf` is the config file. It is a JSON object:
 
 	{
+		installLocation: "/home/user/carm"
 		port: 4200,
 		contactRequiredFields: ["telephone", "email"],
 		contactForbiddenFields: ["fakebody"],
@@ -40,6 +51,8 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 # API
 
 ## Authentication
+
+Basic:
 
 	POST /carm/v1/api/auth
 	Authorization: Basic user:pass

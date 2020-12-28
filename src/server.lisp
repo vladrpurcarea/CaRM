@@ -15,6 +15,12 @@
 	 (hunchentoot:raw-post-data :want-stream t)))
   (funcall next))
 
+(defun to-json (o)
+  (with-output-to-string (json)
+    (typecase o
+      (cons (yason:encode-alist o json))
+      (otherwise (yason:encode o json)))))
+
 (defun @auth (next)
   "TODO"
   (funcall next))

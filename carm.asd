@@ -13,6 +13,8 @@
 	       #:qbase64)
   :components ((:file "package")
 	       (:file "src/server")
+	       (:file "src/database")
+	       (:file "src/auth")
 	       (:file "src/carm"))
   :build-operation "program-op"
   :build-pathname "carm/carm"
