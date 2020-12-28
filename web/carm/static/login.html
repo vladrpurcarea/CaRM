@@ -1,0 +1,39 @@
+<html>
+    <head>
+	<title>CaRM</title>
+	<link rel="stylesheet" href="/carm/static/style.css" />
+	<script>
+	 function sendForm() {
+	     var username = document.getElementById("username-input").value;
+	     var password = document.getElementById("password-input").value;
+	     var xhr = new XMLHttpRequest();
+	     xhr.open("POST", "/carm/api/v1/auth");
+	     xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
+	     xhr.onload = function () {
+		 var sessionId = JSON.parse(this.responseText).sessionId;
+		 document.cookie = "sessionId="+sessionId+"; max-age=172800; path=/carm/;SameSite=Strict";
+		 window.location.href="/carm/static/dashboard.html";
+	     }
+	     xhr.onerror = function() {
+		 console.log("Error during XHR request");
+	     }
+	     xhr.send(null);
+	 }
+	</script>
+    </head>
+    <body>
+	<div id="container" >
+	    <img id="logo" src="/carm/static/img/logo.png" />
+	    <form id="loginform">
+		<div id="loginformcontainer" >
+
+		    <input id="username-input" type="text" placeholder="Username" name="username" required>
+		    
+		    <input id="password-input" type="password" placeholder="Password" name="password" required>
+		    
+		    <button type="button" id="formbutton" onclick="sendForm();">Login</button>
+		</div>
+	    </form>
+	</div>
+    </body>
+</html>

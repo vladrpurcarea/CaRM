@@ -66,3 +66,5 @@ flycheck_*.el
 *.wx32fsl
 
 carm/*
+
+/web/carm/static/img/*

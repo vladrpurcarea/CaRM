@@ -3,6 +3,7 @@
 (in-package #:carm)
 
 (defvar *base-path*)
+(defvar *base-web-path*)
 (defvar *port*)
 (defvar *cr-forbidden-fields*)
 (defvar *cr-required-fields*)
@@ -19,6 +20,7 @@
 	(when (not conf-ht)
 	  (error "Could not read config file"))
 	(setf *base-path* (pathname (gethash "basePath" conf-ht (get-directory-pathname path))))
+	(setf *base-web-path* (gethash "baseWebPath" conf-ht *base-path*))
 	(setf *port* (gethash "port" conf-ht 4200))
 	(setf *cr-required-fields* (gethash "contactRequiredFields" conf-ht '()))
 	(setf *cr-forbidden-fields* (gethash "contactForbiddenFields" conf-ht '()))
