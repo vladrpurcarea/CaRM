@@ -1,0 +1,48 @@
+<html>
+    <head>
+      <title>CaRM - Contact Requests</title>
+      	<link rel="stylesheet"  href="/carm/static/style.css" />
+	<link rel="stylesheet"  href="/carm/static/contactreqstyle.css" />
+	<script src="/carm/static/js/fe.js"> </script>
+    </head>
+    <body>
+	<div class="logocontainer" >
+	  <a href="/carm/static/dashboard.html" >
+	    <img src="/carm/static/img/logo.png" />
+	  </a>
+	</div>
+	<div id="reqscontainer" class="container">
+	</div>
+	<script>
+	 function getRequests() {
+	     var xhr = newXhrAuthReq("GET", "/carm/api/v1/contact-request?limit=10");
+	     
+	     xhr.onload = function () {
+		 var reqs = JSON.parse(this.responseText).contactRequests;
+		 var reqsContainer = document.getElementById("reqscontainer");
+		 reqs.forEach(function (x) {
+		     var div = document.createElement('div');
+		     div.className = x.seen ? "contact-request contact-request-seen" : "contact-request";
+		     div.onclick = function() {
+			 window.location.href = "/carm/static/viewreq.html?id=" + x.id;
+		     }
+
+		     var h1Email = document.createElement('h1');
+		     h1Email.innerText = x.data["email"];
+		     div.appendChild(h1Email);
+
+		     var h2Timestamp = document.createElement('h2');
+		     h2Timestamp.innerText = parseTimestamp(x.timestamp).toString();
+		     div.appendChild(h2Timestamp);
+
+		     reqsContainer.appendChild(div);
+		 });
+	     }
+	     
+	     xhr.send(null);
+	 }
+
+	 getRequests();
+	</script>
+    </body>
+</html>
