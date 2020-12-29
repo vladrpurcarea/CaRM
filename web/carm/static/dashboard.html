@@ -1,9 +1,18 @@
 <html>
     <head>
 	<title>CaRM - Dashboard</title>
-	<link rel="stylesheet"  href="style.css" />
+	<link rel="stylesheet"  href="/carm/static/dashboardstyle.css" />
     </head>
     <body>
-	<h1>Hi</h1>
+	<div class="logocontainer" >
+	  <a href="/carm/static/dashboard.html" >
+	    <img src="/carm/static/img/logo.png" />
+	  </a>
+	</div>
+	<div class="menucontainer" >
+	    <span onclick="location.href='/carm/static/contactreqs.html'" class="menu-item">Contact Requests</span>
+	    <span onclick="location.href='/carm/static/contactreqs.html'" class="menu-item menu-item-scnd-level">Inbox</span>
+	    <span onclick="location.href='/carm/static/contactreqs.html?spam=1'" class="menu-item menu-item-scnd-level">Spam</span>
+	</div>
     </body>
 </html>
