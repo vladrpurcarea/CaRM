@@ -1,0 +1,25 @@
+#requestcontainer {
+    box-shadow: 0px 0px 20px -11px #000000;
+}
+
+.field {
+    margin: 0;
+    padding: 1.3em;
+    background-color: #f1f1f1;
+}
+
+.field-odd {
+    background-color: #e2e2e2;
+}
+
+.field-name {
+    margin-bottom: 0.3em;
+    font-size: 0.8em;
+    color: #545454;
+}
+
+.field-value {
+    display: inline-block;
+    width: 100%;
+    word-wrap: break-word;
+}
