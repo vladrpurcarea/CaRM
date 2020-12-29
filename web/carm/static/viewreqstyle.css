@@ -23,3 +23,46 @@
     width: 100%;
     word-wrap: break-word;
 }
+
+#seen-container {
+    display: flex;
+    width: 100%;
+    max-width: 40em;
+    margin: auto;
+}
+
+#seen-icon {
+    text-align: center;
+    max-width: 6em;
+    width: 6em;
+    margin: 1.8em auto;
+    padding: 1.2em;
+    color: #494949 !important;
+    background: #ffffff;
+    border: 0.1em solid #c9c9c9 !important;
+    border-radius: 6px;
+    transition: all 0.2s ease 0s;
+}
+
+#seen-button {
+    max-width: 55%;
+    width: 55%;
+    display: flex;
+    margin: 1.8em auto;
+    padding: 1.2em;
+    color: #494949 !important;
+    background: #ffffff;
+    border: 0.1em solid #c9c9c9 !important;
+    border-radius: 6px;
+    transition: all 0.2s ease 0s;
+}
+
+#seen-button:hover {
+    cursor: pointer;
+    color: #ffffff !important;
+    font-color: #ffffff;
+    background: #212121;
+    border-color: #212121 !important;
+    transition: all 0.2s ease 0s;
+}
+

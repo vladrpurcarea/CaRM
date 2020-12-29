@@ -47,7 +47,7 @@ input, #formbutton {
     cursor: pointer;
     color: #ffffff !important;
     font-color: #ffffff;
-    background: #bfbfbf;
-    border-color: #bfbfbf !important;
+    background: #212121;
+    border-color: #212121 !important;
     transition: all 0.2s ease 0s;
 }
