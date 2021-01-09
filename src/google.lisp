@@ -2,14 +2,15 @@
 
 (in-package #:carm)
 
-(defvar *priv-key* nil)
-(defvar *access-token* nil)
-(defvar *access-token-expiry-date* nil)
+(defvar *priv-key*)
+(defvar *access-token*)
+(defvar *access-token-expiry-date*)
 
 (defun setup-google-service-auth (rsa-key-path)
   (setf *priv-key* (pem:read-from-file rsa-key-path))
   (when (not *priv-key*)
-    (error (format nil "Could not read RSA key from ~A" rsa-key-path))))
+    (error (format nil "Could not read RSA key from ~A" rsa-key-path)))
+  (refresh-access-token))
 
 (defun refresh-access-token ()
   (if-let ((response

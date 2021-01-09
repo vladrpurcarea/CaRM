@@ -11,6 +11,7 @@
 (defvar *smtp-server*)
 (defvar *smtp-user*)
 (defvar *smtp-pass*)
+(defvar *google-rsa-key-path*)
 
 (defun setup-config (path)
   (labels ((get-directory-pathname (path)
@@ -27,4 +28,6 @@
 	(setf *mail-type* (gethash "mailType" conf-ht))
 	(setf *smtp-server* (gethash "smtpServer" conf-ht))
 	(setf *smtp-user* (gethash "common lisp pathname functionssmtpUser" conf-ht))
-	(setf *smtp-pass* (gethash "smtpPass" conf-ht))))))
+	(setf *smtp-pass* (gethash "smtpPass" conf-ht))
+	(setf *google-rsa-key-path* (gethash "googleRsaKeyPath" conf-ht
+					     (merge-pathnames *base-path* "keyrsa.pem")))))))

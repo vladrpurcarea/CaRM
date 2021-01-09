@@ -13,6 +13,7 @@
     (setup-config (merge-pathnames (pathname (car args)) (uiop:getcwd)))
     (connect-to-db (merge-pathnames *db-filename* *base-path*))
     (setup-schema)
+    (setup-google-service-auth *google-rsa-key-path*)
     (setf *server* (make-server *port* (merge-pathnames #P "web/" *base-web-path*)))
     (hunchentoot:start *server*)
     (handler-case (bt:join-thread

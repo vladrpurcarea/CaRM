@@ -16,7 +16,8 @@
 	       #:bordeaux-threads
 	       #:drakma
 	       #:jose
-	       #:ironclad)
+	       #:ironclad
+	       #:pem)
   :components ((:file "package")
 	       (:file "src/config")
 	       (:file "src/server")
