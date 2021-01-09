@@ -13,14 +13,18 @@
 	       #:qbase64
 	       #:secure-random
 	       #:alexandria
-	       #:bordeaux-threads)
+	       #:bordeaux-threads
+	       #:drakma
+	       #:jose
+	       #:ironclad)
   :components ((:file "package")
 	       (:file "src/config")
 	       (:file "src/server")
 	       (:file "src/database")
 	       (:file "src/auth")
 	       (:file "src/contact-requests")
-	       (:file "src/carm"))
+	       (:file "src/carm")
+	       (:file "src/google"))
   :build-operation "program-op"
   :build-pathname "carm/carm"
   :entry-point "carm:main")

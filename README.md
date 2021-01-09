@@ -34,7 +34,8 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 		mailType: "smtp",
 		smptServer: "smpt.example.com",
 		smtpUser: "foobar",
-		smtpPass: "hunter2"
+		smtpPass: "hunter2",
+		googleRsaKeyPath: "./keyrsa.pem"
 	}
 
 # API
