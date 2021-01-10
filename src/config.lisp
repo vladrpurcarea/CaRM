@@ -12,6 +12,7 @@
 (defvar *smtp-user*)
 (defvar *smtp-pass*)
 (defvar *google-rsa-key-path*)
+(defvar *google-iam-service-email*)
 (defvar *contact-request-spreadsheet-id*)
 (defvar *contact-request-notification-email*)
 
@@ -33,5 +34,6 @@
 	(setf *smtp-pass* (gethash "smtpPass" conf-ht))
 	(setf *google-rsa-key-path* (gethash "googleRsaKeyPath" conf-ht
 					     (merge-pathnames *base-path* "keyrsa.pem")))
+	(setf *google-iam-service-email* (gethash "googleIamServiceEmail" conf-ht))
 	(setf *contact-request-spreadsheet-id* (gethash "contactRequestSpreadsheetId" conf-ht))
 	(setf *contact-request-notification-email* (gethash "contactRequestNotificationEmail" conf-ht))))))

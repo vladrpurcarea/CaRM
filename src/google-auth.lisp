@@ -32,7 +32,7 @@
 
 (defun make-google-jwt-claim-set (&optional (duration-s 3500))
   (let ((now (to-1970-timestamp (get-universal-time))))
-    `(("iss" . "bergmannager@bergmannager.iam.gserviceaccount.com")
+    `(("iss" . *google-iam-service-email*)
       ("scope" . "https://www.googleapis.com/auth/spreadsheets")
       ("aud" . "https://oauth2.googleapis.com/token")
       ("iat" . ,now)
