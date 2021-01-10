@@ -27,7 +27,8 @@
 	       (:file "src/contact-requests")
 	       (:file "src/carm")
 	       (:file "src/google-auth")
-	       (:file "src/google-sheets"))
+	       (:file "src/google-sheets")
+	       (:file "src/cron"))
   :build-operation "program-op"
   :build-pathname "carm/carm"
   :entry-point "carm:main")
