@@ -3,7 +3,7 @@
 `CaRM` is a light CRM system. It:
 
 * keeps track of contact requests from customers
-* provides spam protection with a bayesian filter and honeypot fields
+* provides spam protection with a Bayesian filter and honeypot fields
 * synchronizes Google Sheets spreadsheets with the contact request data
 * sends email notifications
 * runs a webserver to expose data to internal users (with authentication)
