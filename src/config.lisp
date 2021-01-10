@@ -12,6 +12,7 @@
 (defvar *smtp-user*)
 (defvar *smtp-pass*)
 (defvar *google-rsa-key-path*)
+(defvar *contact-request-spreadsheet-id*)
 
 (defun setup-config (path)
   (labels ((get-directory-pathname (path)
@@ -30,4 +31,5 @@
 	(setf *smtp-user* (gethash "common lisp pathname functionssmtpUser" conf-ht))
 	(setf *smtp-pass* (gethash "smtpPass" conf-ht))
 	(setf *google-rsa-key-path* (gethash "googleRsaKeyPath" conf-ht
-					     (merge-pathnames *base-path* "keyrsa.pem")))))))
+					     (merge-pathnames *base-path* "keyrsa.pem")))
+	(setf *contact-request-spreadsheet-id* (gethash "contactRequestSpreadsheetId" conf-ht))))))

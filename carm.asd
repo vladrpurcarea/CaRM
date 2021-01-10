@@ -17,7 +17,8 @@
 	       #:drakma
 	       #:jose
 	       #:ironclad
-	       #:pem)
+	       #:pem
+	       #:cl-cron)
   :components ((:file "package")
 	       (:file "src/config")
 	       (:file "src/server")
@@ -25,7 +26,8 @@
 	       (:file "src/auth")
 	       (:file "src/contact-requests")
 	       (:file "src/carm")
-	       (:file "src/google"))
+	       (:file "src/google-auth")
+	       (:file "src/google-sheets"))
   :build-operation "program-op"
   :build-pathname "carm/carm"
   :entry-point "carm:main")

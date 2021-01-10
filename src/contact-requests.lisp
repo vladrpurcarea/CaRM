@@ -106,3 +106,27 @@
 	(db-exec "UPDATE contact_requests SET seen = ? WHERE id = ?"
 		 (list (if seen 1 0)
 		       id)))))
+
+(defun process-contact-requests ()
+  (process-contact-requests-to-gsheets))
+
+(defun process-contact-requests-to-gsheets ()
+  (let* ((unprocessed-reqs
+	   (db-fetch "SELECT id, data, timestamp FROM contact_requests WHERE processed_spreadsheet = 0"))
+	 (spreadsheet-data
+	  (mapcar (lambda (x)
+		    (let* ((x (parse-contact-request x))
+			   (data (gethash "data" x)))
+		      (list (gethash "name" data)
+			    (gethash "phone" data)
+			    (gethash "email" data)
+			    (to-gsheets-date (gethash "timestamp" x))
+			    ""
+			    (gethash "message" data))))
+		  unprocessed-reqs)))
+    (when unprocessed-reqs
+      (gsheets-append-contact-requests spreadsheet-data)
+      (gsheets-sort-contact-requests-by-date)
+      (loop for req in unprocessed-reqs
+	    do (db-exec "UPDATE contact_requests SET processed_spreadsheet = 1 WHERE id = ?"
+			(list (getf req :|id|)))))))

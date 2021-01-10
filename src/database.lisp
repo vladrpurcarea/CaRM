@@ -29,8 +29,10 @@
   "CREATE TABLE contact_requests (
     id INTEGER PRIMARY KEY,
     data TEXT NOT NULL,
-    seen INTEGER NOT NULL,
+    seen INTEGER NOT NULL DEFAULT 0,
     spam INTEGER NOT NULL,
+    processed_spreadsheet INTEGER NOT NULL DEFAULT 0,
+    processed_email INTEGER NOT NULL DEFAULT 0,
     timestamp INTEGER NOT NULL
   );")
 

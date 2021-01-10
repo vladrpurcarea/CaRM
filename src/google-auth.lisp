@@ -1,4 +1,4 @@
-;;;; google.lisp
+;;;; google-auth.lisp
 
 (in-package #:carm)
 
@@ -33,10 +33,24 @@
 (defun make-google-jwt-claim-set (&optional (duration-s 3500))
   (let ((now (to-1970-timestamp (get-universal-time))))
     `(("iss" . "bergmannager@bergmannager.iam.gserviceaccount.com")
-      ("scope" . "https://www.googleapis.com/auth/devstorage.read_only")
+      ("scope" . "https://www.googleapis.com/auth/spreadsheets")
       ("aud" . "https://oauth2.googleapis.com/token")
       ("iat" . ,now)
       ("exp" . ,(+ now duration-s)))))
+
+(defmacro auth-google-req (uri &rest rest)
+  `(drakma:http-request ,uri
+			:additional-headers (list (get-auth-header))
+			:want-stream t
+			:content-type "application/json"
+		      	,@rest))
+
+(defun get-auth-header ()
+  (when (- *access-token-expiry-date*
+	   (get-universal-time))
+    (refresh-access-token))
+  (cons "Authorization"
+	(format nil "Bearer ~A" *access-token*)))
 
 (defun to-1970-timestamp (universal-time)
   (- universal-time 2208988800))
