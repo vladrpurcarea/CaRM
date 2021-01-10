@@ -108,7 +108,8 @@
 		       id)))))
 
 (defun process-contact-requests ()
-  (process-contact-requests-to-gsheets))
+  (process-contact-requests-to-gsheets)
+  (process-contact-requests-to-mail))
 
 (defun process-contact-requests-to-gsheets ()
   (let* ((unprocessed-reqs
