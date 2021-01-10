@@ -18,7 +18,8 @@
 	       #:jose
 	       #:ironclad
 	       #:pem
-	       #:cl-cron)
+	       #:cl-cron
+	       #:cl-smtp)
   :components ((:file "package")
 	       (:file "src/config")
 	       (:file "src/server")
@@ -28,6 +29,7 @@
 	       (:file "src/carm")
 	       (:file "src/google-auth")
 	       (:file "src/google-sheets")
+	       (:file "src/mail")
 	       (:file "src/cron"))
   :build-operation "program-op"
   :build-pathname "carm/carm"

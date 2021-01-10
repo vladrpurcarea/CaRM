@@ -28,7 +28,7 @@
 	(setf *cr-forbidden-fields* (gethash "contactForbiddenFields" conf-ht '()))
 	(setf *mail-type* (gethash "mailType" conf-ht))
 	(setf *smtp-server* (gethash "smtpServer" conf-ht))
-	(setf *smtp-user* (gethash "common lisp pathname functionssmtpUser" conf-ht))
+	(setf *smtp-user* (gethash "smtpUser" conf-ht))
 	(setf *smtp-pass* (gethash "smtpPass" conf-ht))
 	(setf *google-rsa-key-path* (gethash "googleRsaKeyPath" conf-ht
 					     (merge-pathnames *base-path* "keyrsa.pem")))
