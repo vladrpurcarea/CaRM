@@ -14,7 +14,8 @@
 		 when (member k *cr-forbidden-fields* :test #'string-equal)
 		   return t))
 	 (spam-p (or forbidden-fields-p
-		     (spam-filter (gethash "message" (@json-body)))))
+		     (spam-filter (gethash "message" (@json-body)))
+		     0))
 	 (required-fields-p
 	   (loop for f in *cr-required-fields*
 		 when (not (gethash f (@json-body)))
