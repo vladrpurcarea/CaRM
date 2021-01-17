@@ -112,40 +112,42 @@
   (process-contact-requests-to-mail))
 
 (defun process-contact-requests-to-gsheets ()
-  (let* ((unprocessed-reqs
-	   (db-fetch "SELECT id, data, timestamp FROM contact_requests WHERE processed_spreadsheet = 0"))
-	 (spreadsheet-data
-	  (mapcar (lambda (x)
-		    (let* ((x (parse-contact-request x))
-			   (data (gethash "data" x)))
-		      (list (gethash "name" data)
-			    (gethash "phone" data)
-			    (gethash "email" data)
-			    (to-gsheets-date (gethash "timestamp" x))
-			    ""
-			    (gethash "message" data))))
-		  unprocessed-reqs)))
-    (when unprocessed-reqs
-      (gsheets-append-contact-requests spreadsheet-data)
-      (gsheets-sort-contact-requests-by-date)
-      (loop for req in unprocessed-reqs
-	    do (db-exec "UPDATE contact_requests SET processed_spreadsheet = 1 WHERE id = ?"
-			(list (getf req :|id|)))))))
+  (when *contact-request-spreadsheet-id*
+    (let* ((unprocessed-reqs
+	    (db-fetch "SELECT id, data, timestamp FROM contact_requests WHERE processed_spreadsheet = 0 AND spam = 0"))
+	   (spreadsheet-data
+	    (mapcar (lambda (x)
+		      (let* ((x (parse-contact-request x))
+			     (data (gethash "data" x)))
+			(list (gethash "name" data)
+			      (gethash "phone" data)
+			      (gethash "email" data)
+			      (to-gsheets-date (gethash "timestamp" x))
+			      ""
+			      (gethash "message" data))))
+		    unprocessed-reqs)))
+      (when unprocessed-reqs
+	(gsheets-append-contact-requests spreadsheet-data)
+	(gsheets-sort-contact-requests-by-date)
+	(loop for req in unprocessed-reqs
+	   do (db-exec "UPDATE contact_requests SET processed_spreadsheet = 1 WHERE id = ?"
+		       (list (getf req :|id|))))))))
 
 (defun process-contact-requests-to-mail ()
-  (let* ((unprocessed-reqs
-	   (db-fetch "SELECT id, data, timestamp FROM contact_requests WHERE processed_email = 0")))
-    (when unprocessed-reqs
-      (loop for req in unprocessed-reqs
-	    for data = (gethash "data" (parse-contact-request req))
-	    for to = *contact-request-notification-email*
-	    for subject = (format nil "Booking request: ~A" (gethash "name" data))
-	    for message = (format nil "Name: ~A~%Phone: ~A~%Email: ~A~%Message: ~A~%"
-				  (gethash "name" data)
-				  (gethash "phone" data)
-				  (gethash "email" data)
-				  (gethash "message" data))
-	    do (progn
-		 (send-mail to subject message)
-		 (db-exec "UPDATE contact_requests SET processed_email = 1 WHERE id = ?"
-			  (list (getf req :|id|))))))))
+  (when *contact-request-notification-email*
+    (let* ((unprocessed-reqs
+	    (db-fetch "SELECT id, data, timestamp FROM contact_requests WHERE processed_email = 0 AND spam = 0")))
+      (when unprocessed-reqs
+	(loop for req in unprocessed-reqs
+	   for data = (gethash "data" (parse-contact-request req))
+	   for to = *contact-request-notification-email*
+	   for subject = (format nil "Booking request: ~A" (gethash "name" data))
+	   for message = (format nil "Name: ~A~%Phone: ~A~%Email: ~A~%Message: ~A~%"
+				 (gethash "name" data)
+				 (gethash "phone" data)
+				 (gethash "email" data)
+				 (gethash "message" data))
+	   do (progn
+		(send-mail to subject message)
+		(db-exec "UPDATE contact_requests SET processed_email = 1 WHERE id = ?"
+			 (list (getf req :|id|)))))))))
