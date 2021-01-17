@@ -9,21 +9,22 @@
      :method :POST
      :decorators (@json))
     ()
-  (labels ((forbidden-fields-p ()
-	     (loop for k being the hash-keys of (@json-body)
-		   when (member k *cr-forbidden-fields* :test #'string-equal)
-		     return t))
-	   (requests-field-p ()
-	     (loop for f in *cr-required-fields*
-		   when (not (gethash f (@json-body)))
-		     return nil
-		   finally (return t))))
-    (cond
-      ((forbidden-fields-p) (http-204-no-content))
-      ((not (requests-field-p))
-       (http-400-bad-request (to-json `(("error" . "Required fields missing")))))
-      ((create-contact-request (to-json (@json-body)))
-       (http-204-no-content)))))
+  (let* ((forbidden-fields-p
+	   (loop for k being the hash-keys of (@json-body)
+		 when (member k *cr-forbidden-fields* :test #'string-equal)
+		   return t))
+	 (spam-p (or forbidden-fields-p
+		     (spam-filter (gethash "message" (@json-body)))))
+	 (required-fields-p
+	   (loop for f in *cr-required-fields*
+		 when (not (gethash f (@json-body)))
+		   return nil
+		 finally (return t))))
+    (if required-fields-p
+	(progn
+	  (create-contact-request (to-json (@json-body)) spam-p)
+	  (http-204-no-content))
+	(http-400-bad-request (to-json `(("error" . "Required fields missing")))))))
 
 (defroute get-contact-requests-route
     ("/carm/api/v1/contact-request"
@@ -72,9 +73,9 @@
 
 ;;; INTERNAL
 
-(defun create-contact-request (data)
-  (db-exec "INSERT INTO contact_requests (data, seen, spam, timestamp) VALUES (?, 0, 0, ?);"
-	   (list data (get-universal-time))))
+(defun create-contact-request (data spam)
+  (db-exec "INSERT INTO contact_requests (data, seen, spam, timestamp) VALUES (?, 0, ?, ?);"
+	   (list data spam (get-universal-time))))
 
 (defun get-contact-requests (offset limit)
   (when (and (typep offset 'integer)

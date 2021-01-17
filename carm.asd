@@ -9,6 +9,7 @@
 	       #:yason
 	       #:cl-dbi
 	       #:cl-pass
+	       #:cl-ppcre
 	       #:str
 	       #:qbase64
 	       #:secure-random
@@ -25,6 +26,7 @@
 	       (:file "src/server")
 	       (:file "src/database")
 	       (:file "src/auth")
+	       (:file "src/spam")
 	       (:file "src/contact-requests")
 	       (:file "src/carm")
 	       (:file "src/google-auth")
