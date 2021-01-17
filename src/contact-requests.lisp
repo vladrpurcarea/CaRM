@@ -11,9 +11,9 @@
     ()
   (let* ((forbidden-fields-p
 	   (loop for k being the hash-keys of (@json-body)
-		 for ffield = (member k *cr-forbidden-fields* :test #'string-equal)
-		 when (and ffield
-			   (not (str:empty? ffield)))
+		 using (hash-value v)
+		 when (and (member k *cr-forbidden-fields* :test #'string-equal)
+			   (not (str:empty? v)))
 		   return t))
 	 (spam-p (or forbidden-fields-p
 		     (spam-filter (gethash "message" (@json-body)))))
