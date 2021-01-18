@@ -2,7 +2,7 @@
 
 (in-package #:carm)
 
-(defconstant +sheets-base-uri+ "https://sheets.googleapis.com/v4/spreadsheets")
+(defvar +sheets-base-uri+ "https://sheets.googleapis.com/v4/spreadsheets")
 
 (defun base-spreadsheet-url (spreadsheet-id)
   (format nil "~A/~A" +sheets-base-uri+ spreadsheet-id))
