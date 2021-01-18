@@ -146,7 +146,7 @@
 	   for data = (gethash "data" (parse-contact-request req))
 	   for to = *contact-request-notification-email*
 	   for subject = (format nil "Booking Bergmann Muenchen: ~A" (gethash "name" data))
-	   for message = (format nil "Name: ~A~%Phone: ~A~%Email: ~A~%Message: ~A~%"
+	   for message = (format nil "Stadt: Muenchen~%Name: ~A~%Phone: ~A~%Email: ~A~%Message: ~A~%"
 				 (gethash "name" data)
 				 (gethash "phone" data)
 				 (gethash "email" data)
