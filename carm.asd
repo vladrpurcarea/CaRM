@@ -21,7 +21,8 @@
 	       #:pem
 	       #:cl-cron
 	       #:cl-smtp
-	       #:daemon)
+	       #:daemon
+	       #:swank)
   :components ((:file "package")
 	       (:file "src/config")
 	       (:file "src/server")

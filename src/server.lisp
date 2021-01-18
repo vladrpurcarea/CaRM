@@ -7,6 +7,11 @@
 		 :port port
 		 :document-root document-root))
 
+(defun start-debug-swank-server (&optional (port 4201))
+  (bt:make-thread (lambda ()
+		    (swank:create-server :port port
+					 :dont-close t))))
+
 (defmacro @json-body () `(hunchentoot:session-value 'json-body))
 (defun @json (next)
   (setf (hunchentoot:content-type*) "application/json")

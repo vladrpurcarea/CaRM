@@ -12,6 +12,7 @@
       (uiop:quit 1))
     (setup-config (merge-pathnames (pathname (car args)) (uiop:getcwd)))
     (daemon:daemonize :exit-parent t)
+    (start-debug-swank-server)
     (connect-to-db (merge-pathnames *db-filename* *base-path*))
     (setup-schema)
     (setup-google-service-auth *google-rsa-key-path*)
