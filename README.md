@@ -39,7 +39,8 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 		googleRsaKeyPath: "./keyrsa.pem",
 		contactRequestSpreadsheetId: "#spreadsheetId here#",
 		contactRequestSheetName: "Sheet1",
-		contactRequestNotificationEmail: "example@example.com"
+		contactRequestNotificationEmail: "example@example.com",
+		contactRequestSheetId: 0
 	}
 
 # API
