@@ -14,6 +14,7 @@
     (connect-to-db (merge-pathnames *db-filename* *base-path*))
     (setup-schema)
     (setup-google-service-auth *google-rsa-key-path*)
+    (setup-gsheets)
     (setup-cron-jobs)
     (setf *server* (make-server *port* (merge-pathnames #P "web/" *base-web-path*)))
     (hunchentoot:start *server*)

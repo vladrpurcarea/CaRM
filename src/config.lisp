@@ -16,7 +16,6 @@
 (defvar *contact-request-spreadsheet-id*)
 (defvar *contact-request-notification-email*)
 (defvar *contact-request-sheet-name*)
-(defvar *contact-request-sheet-id*)
 
 (defun setup-config (path)
   (labels ((get-directory-pathname (path)
@@ -39,5 +38,4 @@
 	(setf *google-iam-service-email* (gethash "googleIamServiceEmail" conf-ht))
 	(setf *contact-request-spreadsheet-id* (gethash "contactRequestSpreadsheetId" conf-ht))
 	(setf *contact-request-notification-email* (gethash "contactRequestNotificationEmail" conf-ht))
-	(setf *contact-request-sheet-name* (gethash "contactRequestSheetName" conf-ht "Sheet1"))
-	(setf *contact-request-sheet-id* (gethash "contactRequestSheetId" conf-ht 0))))))
+	(setf *contact-request-sheet-name* (gethash "contactRequestSheetName" conf-ht "Sheet1"))))))

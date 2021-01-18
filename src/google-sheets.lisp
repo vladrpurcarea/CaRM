@@ -2,7 +2,22 @@
 
 (in-package #:carm)
 
+(defvar *contact-request-sheet-id*)
 (defvar +sheets-base-uri+ "https://sheets.googleapis.com/v4/spreadsheets")
+
+(defun setup-gsheets ()
+  (let ((spreadsheet (gsheets-get-spreadsheet *contact-request-spreadsheet-id*)))
+    (setf *contact-request-sheet-id*
+	  (loop for sheet in (gethash "sheets" spreadsheet)
+		for props = (gethash "properties" sheet)
+		when (string-equal (gethash "title" props)
+				   *contact-request-sheet-name*)
+		  return (gethash "sheetId" props)))))
+
+(defun gsheets-get-spreadsheet (spreadsheet-id)
+  (from-json
+   (auth-google-req (base-spreadsheet-url spreadsheet-id)
+		    :method :GET)))
 
 (defun base-spreadsheet-url (spreadsheet-id)
   (format nil "~A/~A" +sheets-base-uri+ spreadsheet-id))
