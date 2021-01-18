@@ -35,7 +35,11 @@
 		      :content request))))
 
 (defun gsheets-append-contact-requests (data)
-  (gsheets-append *contact-request-spreadsheet-id* data))
+  (gsheets-append *contact-request-spreadsheet-id*
+		  data
+		  :range (concatenate 'string
+				      *contact-request-sheet-name*
+				      "!A1:G1")))
 
 (defun gsheets-sort-contact-requests-by-date ()
   (let ((request

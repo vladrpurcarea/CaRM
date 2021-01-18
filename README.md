@@ -38,6 +38,7 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 		smtpPass: "hunter2",
 		googleRsaKeyPath: "./keyrsa.pem",
 		contactRequestSpreadsheetId: "#spreadsheetId here#",
+		contactRequestSheetName: "Sheet1",
 		contactRequestNotificationEmail: "example@example.com"
 	}
 
