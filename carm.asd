@@ -20,7 +20,8 @@
 	       #:ironclad
 	       #:pem
 	       #:cl-cron
-	       #:cl-smtp)
+	       #:cl-smtp
+	       #:daemon)
   :components ((:file "package")
 	       (:file "src/config")
 	       (:file "src/server")
