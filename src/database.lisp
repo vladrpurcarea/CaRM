@@ -33,6 +33,7 @@
     spam INTEGER NOT NULL,
     processed_spreadsheet INTEGER NOT NULL DEFAULT 0,
     processed_email INTEGER NOT NULL DEFAULT 0,
+    host TEXT,
     timestamp INTEGER NOT NULL
   );")
 

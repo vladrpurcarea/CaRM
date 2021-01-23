@@ -2,17 +2,18 @@
 
 (in-package #:carm)
 
-(defvar *contact-request-sheet-id*)
+(defvar *contact-request-sheet-ids*)
 (defvar +sheets-base-uri+ "https://sheets.googleapis.com/v4/spreadsheets")
 
 (defun setup-gsheets ()
   (let ((spreadsheet (gsheets-get-spreadsheet *contact-request-spreadsheet-id*)))
-    (setf *contact-request-sheet-id*
-	  (loop for sheet in (gethash "sheets" spreadsheet)
-		for props = (gethash "properties" sheet)
-		when (string-equal (gethash "title" props)
-				   *contact-request-sheet-name*)
-		  return (gethash "sheetId" props)))))
+    (setf *contact-request-sheet-ids* (make-hash-table :test 'equal))
+    (loop for sheet in (gethash "sheets" spreadsheet)
+	  for props = (gethash "properties" sheet)
+	  do (let ((title (gethash "title" props))
+		   (sheet-id (gethash "sheetId" props)))
+	       (setf (gethash title *contact-request-sheet-ids*)
+		     sheet-id)))))
 
 (defun gsheets-get-spreadsheet (spreadsheet-id)
   (from-json
@@ -49,21 +50,21 @@
 		      :method :POST
 		      :content request))))
 
-(defun gsheets-append-contact-requests (data)
+(defun gsheets-append-contact-request (host data)
   (gsheets-append *contact-request-spreadsheet-id*
-		  data
+		  (list data)
 		  :range (concatenate 'string
-				      *contact-request-sheet-name*
+				      (host->sheet-name host)
 				      "!A1:G1")))
 
-(defun gsheets-sort-contact-requests-by-date ()
+(defun gsheets-sort-contact-requests-by-date (host)
   (let ((request
 	  (alist-hash-table
 	   `(("sortRange"
 	      . ,(alist-hash-table
 		  `(("range"
 		     . ,(alist-hash-table
-			 `(("sheetId" . ,*contact-request-sheet-id*)
+			 `(("sheetId" . ,(host->sheet-id host))
 			   ("startRowIndex" . 1)
 			   ("startColumnIndex" . 0)
 			   ("endColumnIndex" . 6))))
@@ -72,6 +73,13 @@
 			  `(("dimensionIndex" . 3)
 			    ("sortOrder" . "DESCENDING"))))))))))))
     (gsheets-batch-update *contact-request-spreadsheet-id* (list request))))
+
+(defun host->sheet-name (host)
+  (gethash host
+	   *contact-request-sheet-names*))
+(defun host->sheet-id (host)
+  (gethash (host->sheet-name host)
+	   *contact-request-sheet-ids*))
 
 (defun to-gsheets-date (timestamp)
   (multiple-value-bind

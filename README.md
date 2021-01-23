@@ -38,7 +38,7 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 		smtpPass: "hunter2",
 		googleRsaKeyPath: "./keyrsa.pem",
 		contactRequestSpreadsheetId: "#spreadsheetId here#",
-		contactRequestSheetName: "Sheet1",
+		contactRequestSheetNames: {"example.com": "Sheet1" },
 		contactRequestNotificationEmail: "example@example.com",
 		contactRequestSheetId: 0
 	}
@@ -104,10 +104,13 @@ Get contact requests:
 		{id: 2, message: "foobar", seen: false, timestamp: 3818107279} 
 		]
 	}
+
+`offset` and `limit` are used for pagination and optional.
 	
 Contact requests are objects which contain the original string map, in addition to:
 
 * `id` and `timestamp`: numbers. `id`s are guaranteed to be unique and not necessarily sequential.
+* `host`: the TLD of the website initiating the request. Used to know how to process request (by spreadsheet and email)
 * `seen`: boolean. Used in frontend.
 
 To set the `seen` field in contact requests to true/false:
@@ -117,7 +120,6 @@ To set the `seen` field in contact requests to true/false:
 	      or 404 NOT FOUND
 	DELETE /carm/v1/api/contact-request/:id/seen
 	
-`offset` and `limit` are used for pagination and optional.
 
 Get specific contact request:
 
@@ -134,3 +136,21 @@ Forbidden fields are used to honeypot spammers. In the frontend, one may include
 making it so only the bots complete them. If one of the forbidden field is found, the contact request returns `204`,
 but discards all data.
 
+
+
+## Google Spreadsheets Integration
+
+All non-spam contact requests are processed to a google spreadsheet on a 1-minute poll. No API actions happen if there
+are no processable requests.
+
+To set up GSheets integration, you need to modify three parameters in `carm.conf`:
+
+	googleRsaKeyPath: "./keyrsa.pem",
+	contactRequestSpreadsheetId: "#spreadsheetId here#",
+	contactRequestSheetNames: {"example.com": "Sheet1" },
+
+* `googleRsaKeyPath` is a path to a file relative to `carm.conf` containing a google service account RSA key. These are
+generated using Google's online tools
+* `contactRequestSpreadsheetId` is the spreadsheet ID (available in the URL) of the "master" spreadsheet where contact requests
+are uploaded
+* `contactRequestSheetNames` is a `dict` mapping each TLD (the `host` field in `POST /contact-request`) to a Sheet in the Spreadsheet.

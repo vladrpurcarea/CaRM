@@ -25,7 +25,8 @@
     (if required-fields-p
 	(progn
 	  (create-contact-request (to-json (@json-body))
-				  (if spam-p 1 0))
+				  (if spam-p 1 0)
+				  (gethash "host" (@json-body) "UNKNOWN"))
 	  (http-204-no-content))
 	(http-400-bad-request (to-json `(("error" . "Required fields missing")))))))
 
@@ -76,9 +77,9 @@
 
 ;;; INTERNAL
 
-(defun create-contact-request (data spam)
-  (db-exec "INSERT INTO contact_requests (data, seen, spam, timestamp) VALUES (?, 0, ?, ?);"
-	   (list data spam (get-universal-time))))
+(defun create-contact-request (data spam host)
+  (db-exec "INSERT INTO contact_requests (data, seen, spam, host, timestamp) VALUES (?, 0, ?, ?, ?);"
+	   (list data spam host (get-universal-time))))
 
 (defun get-contact-requests (offset limit)
   (when (and (typep offset 'integer)
@@ -118,12 +119,15 @@
 (defun process-contact-requests-to-gsheets ()
   (when *contact-request-spreadsheet-id*
     (let* ((unprocessed-reqs
-	    (db-fetch "SELECT id, data, timestamp FROM contact_requests WHERE processed_spreadsheet = 0 AND spam = 0"))
+	    (db-fetch "SELECT id, data, host, timestamp FROM contact_requests WHERE processed_spreadsheet = 0 AND spam = 0"))
 	   (spreadsheet-data
 	    (mapcar (lambda (x)
-		      (let* ((x (parse-contact-request x))
+		      (let* ((id (getf x :|id|))
+			     (x (parse-contact-request x))
 			     (data (gethash "data" x)))
-			(list (gethash "name" data)
+			(list (gethash "id" x)
+			      (gethash "host" data)
+			      (gethash "name" data)
 			      (gethash "phone" data)
 			      (gethash "email" data)
 			      (to-gsheets-date (gethash "timestamp" x))
@@ -131,11 +135,17 @@
 			      (gethash "message" data))))
 		    unprocessed-reqs)))
       (when unprocessed-reqs
-	(gsheets-append-contact-requests spreadsheet-data)
-	(gsheets-sort-contact-requests-by-date)
-	(loop for req in unprocessed-reqs
-	   do (db-exec "UPDATE contact_requests SET processed_spreadsheet = 1 WHERE id = ?"
-		       (list (getf req :|id|))))))))
+	(loop for s-data in spreadsheet-data
+	      for id = (car s-data)
+	      for host = (cadr s-data)
+	      for data = (cddr s-data)
+	      do (progn
+		   (gsheets-append-contact-request host
+						   data)
+		   (gsheets-sort-contact-requests-by-date host)
+		   (format t "~A~%" data)
+		   (db-exec "UPDATE contact_requests SET processed_spreadsheet = 1 WHERE id = ?"
+			    (list id))))))))
 
 (defun process-contact-requests-to-mail ()
   (when *contact-request-notification-email*
@@ -143,15 +153,16 @@
 	    (db-fetch "SELECT id, data, timestamp FROM contact_requests WHERE processed_email = 0 AND spam = 0")))
       (when unprocessed-reqs
 	(loop for req in unprocessed-reqs
-	   for data = (gethash "data" (parse-contact-request req))
-	   for to = *contact-request-notification-email*
-	   for subject = (format nil "Booking Bergmann Muenchen: ~A" (gethash "name" data))
-	   for message = (format nil "Stadt: Muenchen~%Name: ~A~%Phone: ~A~%Email: ~A~%Message: ~A~%"
-				 (gethash "name" data)
-				 (gethash "phone" data)
-				 (gethash "email" data)
-				 (gethash "message" data))
-	   do (progn
+	      for data = (gethash "data" (parse-contact-request req))
+	      for to = *contact-request-notification-email*
+	      for subject = (format nil "Booking Bergmann Muenchen: ~A" (gethash "name" data))
+	      for message = (format nil "Host: ~A~%Name: ~A~%Phone: ~A~%Email: ~A~%Message: ~A~%"
+				    (gethash "host" data)
+				    (gethash "name" data)
+				    (gethash "phone" data)
+				    (gethash "email" data)
+				    (gethash "message" data))
+	      do (progn
 		(send-mail to subject message)
 		(db-exec "UPDATE contact_requests SET processed_email = 1 WHERE id = ?"
 			 (list (getf req :|id|)))))))))
