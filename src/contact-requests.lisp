@@ -155,8 +155,10 @@
 	(loop for req in unprocessed-reqs
 	      for data = (gethash "data" (parse-contact-request req))
 	      for to = *contact-request-notification-email*
-	      for subject = (format nil "Booking ~A: ~A" (gethash "host" data) (gethash "name" data))
-	      for message = (format nil "Host: ~A~%Name: ~A~%Phone: ~A~%Email: ~A~%Message: ~A~%"
+	      for subject = (format nil "~A: ~A"
+				    (host->sheet-name (gethash "host" data))
+				    (gethash "name" data))
+	      for message = (format nil "Site: ~A~%Name: ~A~%Phone: ~A~%Email: ~A~%Message: ~A~%"
 				    (gethash "host" data)
 				    (gethash "name" data)
 				    (gethash "phone" data)
