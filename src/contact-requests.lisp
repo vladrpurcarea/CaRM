@@ -26,7 +26,10 @@
 	(progn
 	  (create-contact-request (to-json (@json-body))
 				  (if spam-p 1 0)
-				  (gethash "host" (@json-body) "UNKNOWN"))
+				  (gethash "host" (@json-body)
+					   (str:replace-all "www."
+							    ""
+							    (hunchentoot:host))))
 	  (http-204-no-content))
 	(http-400-bad-request (to-json `(("error" . "Required fields missing")))))))
 
@@ -129,7 +132,7 @@
 		      (let* ((x (parse-contact-request x))
 			     (data (gethash "data" x)))
 			(list (gethash "id" x)
-			      (gethash "host" data)
+			      (gethash "host" x)
 			      (gethash "name" data)
 			      (gethash "phone" data)
 			      (gethash "email" data)
@@ -156,17 +159,17 @@
   (when *contact-request-notification-email*
     (syslog :info "Processing contact requests to email")
     (let* ((unprocessed-reqs
-	    (db-fetch "SELECT id, data, timestamp FROM contact_requests WHERE processed_email = 0 AND spam = 0")))
+	    (db-fetch "SELECT id, data, host, timestamp FROM contact_requests WHERE processed_email = 0 AND spam = 0")))
       (when unprocessed-reqs
 	(syslog :info "~D contact request(s) to send mail for." (length unprocessed-reqs))
 	(loop for req in unprocessed-reqs
 	      for data = (gethash "data" (parse-contact-request req))
 	      for to = *contact-request-notification-email*
 	      for subject = (format nil "~A: ~A"
-				    (host->sheet-name (gethash "host" data))
+				    (host->sheet-name (getf req :|host|))
 				    (gethash "name" data))
 	      for message = (format nil "Site: ~A~%Name: ~A~%Phone: ~A~%Email: ~A~%Message: ~A~%"
-				    (gethash "host" data)
+				    (getf req :|host|)
 				    (gethash "name" data)
 				    (gethash "phone" data)
 				    (gethash "email" data)

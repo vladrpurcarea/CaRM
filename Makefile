@@ -8,4 +8,6 @@ build:
 		--eval '(ql:quickload :$(APPNAME))' \
 		--eval '(asdf:make :$(APPNAME))' \
 		--eval '(quit)'
-	cp -r $(WEB_DIR) $(APPNAME)/
+	cp -rp $(WEB_DIR) $(APPNAME)/
+	cp -p scripts/logs.sh $(APPNAME)/
+	cp -p  scripts/restart.sh $(APPNAME)/
