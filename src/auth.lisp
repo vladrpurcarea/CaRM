@@ -7,7 +7,7 @@
 (defroute post-auth
     ("/carm/api/v1/auth"
      :method :POST
-     :decorators (@json-out))
+     :decorators (@log-errors @json-out))
     ()
   (multiple-value-bind (username password)
       (hunchentoot:authorization)
@@ -20,7 +20,8 @@
 
 (defroute delete-auth
     ("/carm/api/v1/auth"
-     :method :DELETE)
+     :method :DELETE
+     :decorators (@log-errors))
     ()
   (invalidate-session (get-basic-auth-header))
   (http-204-no-content))

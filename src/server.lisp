@@ -64,6 +64,11 @@
       (http-403-forbidden)
       (funcall next)))
 
+(defun @log-errors (next)
+  (handler-case (funcall next)
+    (error (e) (syslog :error "Lisp Error: ~A" e))))
+(defmacro log-errors (&body body)
+  `(@log-errors (lambda () ,@body)))
 
 (defun http-204-no-content ()
   (setf (hunchentoot:return-code*) hunchentoot:+http-no-content+)

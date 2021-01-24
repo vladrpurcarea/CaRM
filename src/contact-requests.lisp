@@ -7,7 +7,7 @@
 (defroute post-contact-request
     ("/carm/api/v1/contact-request"
      :method :POST
-     :decorators (@json))
+     :decorators (@log-errors @json))
     ()
   (let* ((forbidden-fields-p
 	   (loop for k being the hash-keys of (@json-body)
@@ -33,7 +33,7 @@
 (defroute get-contact-requests-route
     ("/carm/api/v1/contact-request"
      :method :GET
-     :decorators (@auth @json-out))
+     :decorators (@log-errors @auth @json-out))
     (&get offset limit)
   (labels ((parse (val default)
 	     (if val
@@ -48,7 +48,7 @@
 (defroute get-contact-request-route
     ("/carm/api/v1/contact-request/:id"
      :method :GET
-     :decorators (@auth @json-out))
+     :decorators (@log-errors @auth @json-out))
     ()
   (if-let ((contact-request (get-contact-request id)))
     (to-json contact-request)
@@ -58,7 +58,7 @@
 (defroute put-contact-request-seen-route
     ("/carm/api/v1/contact-request/:id/seen"
      :method :PUT
-     :decorators (@auth))
+     :decorators (@log-errors @auth))
     ()
   (if (set-contact-request-seen id t)
       (http-204-no-content)
@@ -69,7 +69,7 @@
 (defroute delete-contact-request-seen-route
     ("/carm/api/v1/contact-request/:id/seen"
      :method :DELETE
-     :decorators (@auth))
+     :decorators (@log-errors @auth))
     ()
   (if (set-contact-request-seen id nil)
       (http-204-no-content)
@@ -114,9 +114,10 @@
 		       id)))))
 
 (defun process-contact-requests ()
-  (syslog :info "Processing unprocessed contact requests.")
-  (process-contact-requests-to-gsheets)
-  (process-contact-requests-to-mail))
+  (log-errors
+    (syslog :info "Processing unprocessed contact requests.")
+    (process-contact-requests-to-gsheets)
+    (process-contact-requests-to-mail)))
 
 (defun process-contact-requests-to-gsheets ()
   (when *contact-request-spreadsheet-id*
