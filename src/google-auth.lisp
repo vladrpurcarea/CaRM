@@ -41,11 +41,29 @@
       ("exp" . ,(+ now duration-s)))))
 
 (defmacro auth-google-req (uri &rest rest)
-  `(drakma:http-request ,uri
-			:additional-headers (list (get-auth-header))
-			:want-stream t
-			:content-type "application/json"
-		      	,@rest))
+  `(labels
+       ((auth-google-req-f (retries)
+	  (when (> retries 0)
+	    (multiple-value-bind
+		  (stream status headers)
+		(drakma:http-request ,uri
+				     :additional-headers (list (get-auth-header))
+				     :want-stream t
+				     :content-type "application/json"
+				     ,@rest)
+	      (cond
+		((or
+		  (= status 401)
+		  (= status 403))
+		 (refresh-access-token)
+		 (auth-google-req-f (1- retries)))
+		((or (< status 200)
+		     (> status 299))
+		 (error "Google Request returned status ~A: ~A"
+			status
+			(uiop:slurp-stream-string stream)))
+		(t (values stream status headers)))))))
+     (auth-google-req-f 2)))
 
 (defun get-auth-header ()
   (when (< (- *access-token-expiry-date*

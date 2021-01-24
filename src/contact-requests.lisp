@@ -153,7 +153,9 @@
 		       (gsheets-sort-contact-requests-by-date host)
 		       (db-exec "UPDATE contact_requests SET processed_spreadsheet = 1 WHERE id = ?"
 				(list id)))
-		   (error () (syslog :error "Could not process contact request ~A." id))))))))
+		   (error (e)
+		     (syslog :err "Could not process contact request ~A." id)
+		     (syslog :err "~A" e))))))))
 
 (defun process-contact-requests-to-mail ()
   (when *contact-request-notification-email*

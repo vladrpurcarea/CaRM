@@ -66,7 +66,7 @@
 
 (defun @log-errors (next)
   (handler-case (funcall next)
-    (error (e) (syslog :error "Lisp Error: ~A" e))))
+    (error (e) (syslog :err "Lisp Error: ~A" e))))
 (defmacro log-errors (&body body)
   `(@log-errors (lambda () ,@body)))
 
