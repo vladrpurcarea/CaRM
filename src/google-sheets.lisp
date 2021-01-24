@@ -6,6 +6,7 @@
 (defvar +sheets-base-uri+ "https://sheets.googleapis.com/v4/spreadsheets")
 
 (defun setup-gsheets ()
+  (syslog :info "Getting Google Spreadsheet information about sheets")
   (let ((spreadsheet (gsheets-get-spreadsheet *contact-request-spreadsheet-id*)))
     (setf *contact-request-sheet-ids* (make-hash-table :test 'equal))
     (loop for sheet in (gethash "sheets" spreadsheet)
@@ -13,7 +14,8 @@
 	  do (let ((title (gethash "title" props))
 		   (sheet-id (gethash "sheetId" props)))
 	       (setf (gethash title *contact-request-sheet-ids*)
-		     sheet-id)))))
+		     sheet-id)
+	       (syslog :info "Sheet ~A: ~A" title sheet-id)))))
 
 (defun gsheets-get-spreadsheet (spreadsheet-id)
   (from-json

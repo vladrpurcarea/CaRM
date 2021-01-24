@@ -78,6 +78,7 @@
 ;;; INTERNAL
 
 (defun create-contact-request (data spam host)
+  (syslog :info "Creating new contact request from ~A (spam: ~A)" host spam)
   (db-exec "INSERT INTO contact_requests (data, seen, spam, host, timestamp) VALUES (?, 0, ?, ?, ?);"
 	   (list data spam host (get-universal-time))))
 
@@ -113,11 +114,13 @@
 		       id)))))
 
 (defun process-contact-requests ()
+  (syslog :info "Processing unprocessed contact requests.")
   (process-contact-requests-to-gsheets)
   (process-contact-requests-to-mail))
 
 (defun process-contact-requests-to-gsheets ()
   (when *contact-request-spreadsheet-id*
+    (syslog :info "Processing contact requests to GSheets")
     (let* ((unprocessed-reqs
 	    (db-fetch "SELECT id, data, host, timestamp FROM contact_requests WHERE processed_spreadsheet = 0 AND spam = 0"))
 	   (spreadsheet-data
@@ -134,6 +137,7 @@
 			      (gethash "message" data))))
 		    unprocessed-reqs)))
       (when unprocessed-reqs
+	(syslog :info "~D contact request(s) to sync to spreadsheets." (length unprocessed-reqs))
 	(loop for s-data in spreadsheet-data
 	      for id = (car s-data)
 	      for host = (cadr s-data)
@@ -145,13 +149,15 @@
 		       (gsheets-sort-contact-requests-by-date host)
 		       (db-exec "UPDATE contact_requests SET processed_spreadsheet = 1 WHERE id = ?"
 				(list id)))
-		   (error () (hunchentoot:log-message* 'error "Could not process contact request ~A" id))))))))
+		   (error () (syslog :error "Could not process contact request ~A." id))))))))
 
 (defun process-contact-requests-to-mail ()
   (when *contact-request-notification-email*
+    (syslog :info "Processing contact requests to email")
     (let* ((unprocessed-reqs
 	    (db-fetch "SELECT id, data, timestamp FROM contact_requests WHERE processed_email = 0 AND spam = 0")))
       (when unprocessed-reqs
+	(syslog :info "~D contact request(s) to send mail for." (length unprocessed-reqs))
 	(loop for req in unprocessed-reqs
 	      for data = (gethash "data" (parse-contact-request req))
 	      for to = *contact-request-notification-email*

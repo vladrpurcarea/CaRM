@@ -7,6 +7,7 @@
 		    (from *smtp-user*)
 		    (smtp-user *smtp-user*)
 		    (smtp-pass *smtp-pass*))
+  (syslog :info "Sending mail to ~A with subject \"~A\"." to subject)
   (cl-smtp:send-email "smtp.variomedia.de"
 		      from
 		      to

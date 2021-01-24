@@ -41,6 +41,7 @@
   (format nil "CREATE TABLE ~A (id INTEGER PRIMARY KEY);" *db-master-table-name*))
 
 (defun connect-to-db (location)
+  (syslog :info "Connecting to sqlite3 database at ~A" location)
   (setf *conn*
 	(dbi:connect :sqlite3
 		     :database-name location)))
@@ -77,14 +78,8 @@
 	      "SELECT 1 FROM sqlite_master WHERE type='table' AND name = ?;"
 	      :args (list *db-master-table-name*))))
     (when (not (schema-initialized-p))
+      (syslog :info "Schema not initialized. Setting up schema.")
       (db-exec *users-table-init-query*)
       (db-exec *contact-requests-table-init-query*)
       (db-exec *sessions-table-init-query*)
       (db-exec *master-table-init-query*))))
-
-(defun drop-schema ()
-  (ignore-errors
-   (db-exec "DROP TABLE IF EXISTS users;")
-   (db-exec "DROP TABLE IF EXISTS carm_master;")
-   (db-exec "DROP TABLE IF EXISTS sessions;")
-   (db-exec "DROP TABLE IF EXISTS contact_requests;")))

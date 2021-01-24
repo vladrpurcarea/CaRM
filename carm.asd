@@ -22,8 +22,10 @@
 	       #:cl-cron
 	       #:cl-smtp
 	       #:daemon
-	       #:swank)
+	       #:swank
+	       #:cl-syslog)
   :components ((:file "package")
+	       (:file "src/log")
 	       (:file "src/config")
 	       (:file "src/server")
 	       (:file "src/database")

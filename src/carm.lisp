@@ -5,12 +5,15 @@
 (defvar *server*)
 
 (defun main ()
+  (syslog :info "Initializing.")
   (let ((args (uiop:command-line-arguments)))
     (when (not (= (length args)
 		  1))
       (format t "Usage: carm path/to/carm.conf.~%")
       (uiop:quit 1))
     (setup-config (merge-pathnames (pathname (car args)) (uiop:getcwd)))
+
+    (syslog :info "Daemonizing myself.")
     (daemon:daemonize :exit-parent t)
     (start-debug-swank-server)
     (connect-to-db (merge-pathnames *db-filename* *base-path*))
@@ -19,6 +22,7 @@
     (setup-gsheets)
     (setup-cron-jobs)
     (setf *server* (make-server *port* (merge-pathnames #P "web/" *base-web-path*)))
+    (syslog :info "Starting server on port ~D." *port*)
     (hunchentoot:start *server*)
     (handler-case (bt:join-thread
 		   (find-if (lambda (th)
@@ -31,7 +35,7 @@
        #+ecl ext:interactive-interrupt
        #+allegro excl:interrupt-signal
        () (progn
-            (format t "Closing..")
+            (syslog :info "Closing.")
             (hunchentoot:stop *server*)
 	    (disconnect-from-db)
 	    (daemon:exit)

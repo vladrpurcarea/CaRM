@@ -7,12 +7,14 @@
 (defvar *access-token-expiry-date*)
 
 (defun setup-google-service-auth (rsa-key-path)
+  (syslog :info "Reading RSA key for Google Service Account auth.")
   (setf *priv-key* (pem:read-from-file rsa-key-path))
   (when (not *priv-key*)
     (error (format nil "Could not read RSA key from ~A" rsa-key-path)))
   (refresh-access-token))
 
 (defun refresh-access-token ()
+  (syslog :info "Refreshing Google auth token.")
   (if-let ((response
 	    (from-json
 	     (drakma:http-request "https://oauth2.googleapis.com/token"
@@ -46,8 +48,9 @@
 		      	,@rest))
 
 (defun get-auth-header ()
-  (when (- *access-token-expiry-date*
-	   (get-universal-time))
+  (when (< (- *access-token-expiry-date*
+	      (get-universal-time))
+	   10)
     (refresh-access-token))
   (cons "Authorization"
 	(format nil "Bearer ~A" *access-token*)))

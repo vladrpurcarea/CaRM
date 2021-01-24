@@ -8,6 +8,7 @@
 		 :document-root document-root))
 
 (defun start-debug-swank-server (&optional (port 4201))
+  (syslog :info "Starting debug Swank server on port ~D" port)
   (bt:make-thread (lambda ()
 		    (swank:create-server :port port
 					 :dont-close t))))

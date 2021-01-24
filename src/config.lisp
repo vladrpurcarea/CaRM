@@ -18,6 +18,7 @@
 (defvar *contact-request-sheet-names*)
 
 (defun setup-config (path)
+  (syslog :info "Reading config from ~A" path)
   (labels ((get-directory-pathname (path)
 	     (make-pathname :directory (pathname-directory path))))
     (with-open-file (fd path)
@@ -25,8 +26,10 @@
 	(when (not conf-ht)
 	  (error "Could not read config file"))
 	(setf *base-path* (pathname (gethash "basePath" conf-ht (get-directory-pathname path))))
+	(syslog :info "Base path: ~A" *base-path*)
 	(setf *base-web-path* (gethash "baseWebPath" conf-ht *base-path*))
 	(setf *port* (gethash "port" conf-ht 4200))
+	(syslog :info "Port: ~D" *port*)
 	(setf *cr-required-fields* (gethash "contactRequiredFields" conf-ht '()))
 	(setf *cr-forbidden-fields* (gethash "contactForbiddenFields" conf-ht '()))
 	(setf *mail-type* (gethash "mailType" conf-ht))
