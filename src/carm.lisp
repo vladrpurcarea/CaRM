@@ -13,8 +13,9 @@
       (uiop:quit 1))
     (setup-config (merge-pathnames (pathname (car args)) (uiop:getcwd)))
 
-    (syslog :info "Daemonizing myself.")
-    (daemon:daemonize :exit-parent t)
+    (when *daemonize*
+      (syslog :info "Daemonizing myself.")
+      (daemon:daemonize :exit-parent t))
     (start-debug-swank-server)
     (connect-to-db (merge-pathnames *db-filename* *base-path*))
     (setup-schema)
@@ -38,6 +39,7 @@
             (syslog :info "Closing.")
             (hunchentoot:stop *server*)
 	    (disconnect-from-db)
-	    (daemon:exit)
+	    (when *daemonize*
+	      (daemon:exit))
             (uiop:quit)))
       (error (c) (format t "Unknown error:~&~a~&" c)))))

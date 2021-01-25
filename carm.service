@@ -2,7 +2,7 @@
 Description=CaRM
 
 [Service]
-Type=forking
+Type=simple
 ExecStart=/etc/carm/carm /etc/carm/carm.conf
 Restart=on-failure
 
