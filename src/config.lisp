@@ -28,7 +28,7 @@
 	  (error "Could not read config file"))
 	(setf *base-path* (pathname (gethash "basePath" conf-ht (get-directory-pathname path))))
 	(syslog :info "Base path: ~A" *base-path*)
-	(setf *base-web-path* (gethash "baseWebPath" conf-ht *base-path*))
+	(setf *base-web-path* (gethash "baseWebPath" conf-ht (merge-pathnames #P "web/" *base-web-path*)))
 	(setf *port* (gethash "port" conf-ht 4200))
 	(syslog :info "Port: ~D" *port*)
 	(setf *cr-required-fields* (gethash "contactRequiredFields" conf-ht '()))

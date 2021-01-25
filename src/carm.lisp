@@ -22,7 +22,7 @@
     (setup-google-service-auth *google-rsa-key-path*)
     (setup-gsheets)
     (setup-cron-jobs)
-    (setf *server* (make-server *port* (merge-pathnames #P "web/" *base-web-path*)))
+    (setf *server* (make-server *port* *base-web-path*))
     (syslog :info "Starting server on port ~D." *port*)
     (hunchentoot:start *server*)
     (handler-case (bt:join-thread
