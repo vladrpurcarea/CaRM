@@ -1,0 +1,10 @@
+[Unit]
+Description=CaRM
+
+[Service]
+Type=forking
+ExecStart=/etc/carm/carm /etc/carm/carm.conf
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

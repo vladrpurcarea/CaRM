@@ -11,3 +11,9 @@ build:
 	cp -rp $(WEB_DIR) $(APPNAME)/
 	cp -p scripts/logs.sh $(APPNAME)/
 	cp -p  scripts/restart.sh $(APPNAME)/
+
+install:
+	sudo cp -rp $(APPNAME)/ /etc/$(APPNAME)
+	sudo chown -R "root:root" /etc/$(APPNAME)
+	sudo cp carm.service /etc/systemd/system/
+	sudo chmod 664 /etc/systemd/system/carm.service
