@@ -13,7 +13,7 @@ build:
 	cp -p  scripts/restart.sh $(APPNAME)/
 
 install:
-	sudo cp -rp $(APPNAME)/ /etc/$(APPNAME)
+	sudo cp -rpT $(APPNAME)/ /etc/$(APPNAME)
 	sudo chown -R "root:root" /etc/$(APPNAME)
 	sudo cp carm.service /etc/systemd/system/
 	sudo chmod 664 /etc/systemd/system/carm.service
