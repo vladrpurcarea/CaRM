@@ -17,3 +17,4 @@ install:
 	sudo chown -R "root:root" /etc/$(APPNAME)
 	sudo cp carm.service /etc/systemd/system/
 	sudo chmod 664 /etc/systemd/system/carm.service
+	sudo systemctl daemon-reload

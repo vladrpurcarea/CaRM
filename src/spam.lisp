@@ -8,8 +8,11 @@
   (ppcre:create-scanner "(^|[^a-zA-Z])viagra([^a-zA-Z]|$)"))
 (defvar *russian-regex*
   (ppcre:create-scanner "\\p{Cyrillic}"))
+(defvar *more-than-one-word-regex*
+  (ppcre:create-scanner "\\w\\s+\\w"))
 
 (defun spam-filter (s)
   (or (ppcre:scan *url-regex* s)
       (ppcre:scan *viagra-regex* s)
-      (ppcre:scan *russian-regex* s)))
+      (ppcre:scan *russian-regex* s)
+      (not (ppcre:scan *more-than-one-word-regex* s))))

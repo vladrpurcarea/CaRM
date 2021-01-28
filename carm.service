@@ -1,10 +1,11 @@
 [Unit]
 Description=CaRM
+After=network.target
 
 [Service]
 Type=simple
 ExecStart=/etc/carm/carm /etc/carm/carm.conf
-Restart=on-failure
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
