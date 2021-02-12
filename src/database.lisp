@@ -36,6 +36,19 @@
     host TEXT,
     timestamp INTEGER NOT NULL
   );")
+(defvar *appointments-table-init-query*
+  "CREATE TABLE appointments (
+     id INTEGER PRIMARY KEY,
+     host TEXT NOT NULL,
+     customer_name TEXT NOT NULL,
+     start_time INTEGER NOT NULL,
+     end_time INTEGER NOT NULL,
+     price REAL NOT NULL,
+     currency TEXT NOT NULL,
+     photographer TEXT NOT NULL,
+     photoshoot_type TEXT NOT NULL,
+     photoshoot_package TEXT NOT NULL
+  );")
 
 (defvar *master-table-init-query*
   (format nil "CREATE TABLE ~A (id INTEGER PRIMARY KEY);" *db-master-table-name*))
@@ -82,4 +95,5 @@
       (db-exec *users-table-init-query*)
       (db-exec *contact-requests-table-init-query*)
       (db-exec *sessions-table-init-query*)
+      (db-exec *appointments-table-init-query*)
       (db-exec *master-table-init-query*))))

@@ -36,6 +36,7 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 		smptServer: "smpt.example.com",
 		smtpUser: "foobar",
 		smtpPass: "hunter2",
+		googleIamServiceEmail: "iam.example@example.com",
 		googleRsaKeyPath: "./keyrsa.pem",
 		contactRequestSpreadsheetId: "#spreadsheetId here#",
 		contactRequestSheetNames: {"example.com": "Sheet1" },
@@ -136,16 +137,52 @@ Forbidden fields are used to honeypot spammers. In the frontend, one may include
 making it so only the bots complete them. If one of the forbidden field is found, the contact request returns `204`,
 but discards all data.
 
+## Appointments
 
+Appointments are stored in the database and sync'ed to Google Calendar.
+All appointment endpoints require authentication.
 
-## Google Spreadsheets Integration
+	POST /carm/v1/api/appointment
+	Accepts: an Appointment: {
+		host: string,
+		customerName: string,
+		startTime: timestamp,
+		endTime: timestamp,
+		price: number,
+		currency: ISO 4217 string,
+		photographer: string enum,
+		photoshootType: string,
+		photoshootPackage: string,
+	}
+	Example: {
+		host: string,
+		customerName: "Michael McDoesntExist",
+		startTime: 3821947200,
+		endTime: 3821952600,
+		price: 275.50
+		currency: "EUR",
+		photographer: "Thomas Example III",
+		photoshootType: "outdoors",
+		photoshootPackage: "forest"
+	}
+	Returns: 204 NO CONTENT or 400 BAD REQUEST
+
+## Google Integration
+
+To set up Google integration you need to create a Google service account and fill in the details in `carm.conf`:
+
+	googleIamServiceEmail: "iam.example@example.com",
+	googleRsaKeyPath: "./keyrsa.pem",
+
+### Google Calendar Integration
+
+### Google Spreadsheets Integration
 
 All non-spam contact requests are processed to a google spreadsheet on a 1-minute poll. No API actions happen if there
 are no processable requests.
 
 To set up GSheets integration, you need to modify three parameters in `carm.conf`:
 
-	googleRsaKeyPath: "./keyrsa.pem",
 	contactRequestSpreadsheetId: "#spreadsheetId here#",
 	contactRequestSheetNames: {"example.com": "Sheet1" },
 
