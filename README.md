@@ -41,7 +41,8 @@ The frontend is plain HTML+JS. It renders data received from the API. It is usab
 		contactRequestSpreadsheetId: "#spreadsheetId here#",
 		contactRequestSheetNames: {"example.com": "Sheet1" },
 		contactRequestNotificationEmail: "example@example.com",
-		contactRequestSheetId: 0
+		contactRequestSheetId: 0,
+		appointmentCalendarId: "#calendarId here#"
 	}
 
 # API
@@ -155,15 +156,15 @@ All appointment endpoints require authentication.
 		photoshootPackage: string,
 	}
 	Example: {
-		host: string,
-		customerName: "Michael McDoesntExist",
-		startTime: 3821947200,
-		endTime: 3821952600,
-		price: 275.50
-		currency: "EUR",
-		photographer: "Thomas Example III",
-		photoshootType: "outdoors",
-		photoshootPackage: "forest"
+		"host": "example.com",
+		"customerName": "Michael McDoesntExist",
+		"startTime": 3821947200,
+		"endTime": 3821952600,
+		"price": 275.50
+		"currency": "EUR",
+		"photographer": "Thomas Example III",
+		"photoshootType": "outdoors",
+		"photoshootPackage": "forest"
 	}
 	Returns: 204 NO CONTENT or 400 BAD REQUEST
 

@@ -7,7 +7,7 @@
 (defroute post-auth
     ("/carm/api/v1/auth"
      :method :POST
-     :decorators (@log-errors @json-out))
+     :decorators (@json-out))
     ()
   (multiple-value-bind (username password)
       (hunchentoot:authorization)

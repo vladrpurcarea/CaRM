@@ -23,7 +23,8 @@
 	       #:cl-smtp
 	       #:daemon
 	       #:swank
-	       #:cl-syslog)
+	       #:cl-syslog
+	       #:local-time)
   :components ((:file "package")
 	       (:file "src/log")
 	       (:file "src/util")
@@ -37,6 +38,7 @@
 	       (:file "src/carm")
 	       (:file "src/google-auth")
 	       (:file "src/google-sheets")
+	       (:file "src/google-calendar")
 	       (:file "src/mail")
 	       (:file "src/cron"))
   :build-operation "program-op"

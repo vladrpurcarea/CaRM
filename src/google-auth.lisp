@@ -35,7 +35,7 @@
 (defun make-google-jwt-claim-set (&optional (duration-s 3500))
   (let ((now (to-1970-timestamp (get-universal-time))))
     `(("iss" . ,*google-iam-service-email*)
-      ("scope" . "https://www.googleapis.com/auth/spreadsheets")
+      ("scope" . "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/calendar")
       ("aud" . "https://oauth2.googleapis.com/token")
       ("iat" . ,now)
       ("exp" . ,(+ now duration-s)))))

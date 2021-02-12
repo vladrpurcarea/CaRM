@@ -17,6 +17,7 @@
 (defvar *contact-request-notification-email*)
 (defvar *contact-request-sheet-names*)
 (defvar *daemonize*)
+(defvar *appointment-calendar-id*)
 
 (defun setup-config (path)
   (syslog :info "Reading config from ~A" path)
@@ -43,4 +44,5 @@
 	(setf *contact-request-spreadsheet-id* (gethash "contactRequestSpreadsheetId" conf-ht))
 	(setf *contact-request-notification-email* (gethash "contactRequestNotificationEmail" conf-ht))
 	(setf *contact-request-sheet-names* (gethash "contactRequestSheetNames" conf-ht))
-	(setf *daemonize* (gethash "daemonize" conf-ht nil))))))
+	(setf *daemonize* (gethash "daemonize" conf-ht nil))
+	(setf *appointment-calendar-id* (gethash "appointmentCalendarId" conf-ht))))))

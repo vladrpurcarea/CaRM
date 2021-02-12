@@ -8,3 +8,7 @@
        (error (make-condition 'type-error
 			      :datum ,x
 			      :expected-type ,type))))
+(defun universal-time->rfc3339 (utime)
+  (local-time:format-rfc3339-timestring
+   nil
+   (local-time:universal-to-timestamp utime)))
