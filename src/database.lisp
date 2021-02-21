@@ -41,13 +41,18 @@
      id INTEGER PRIMARY KEY,
      host TEXT NOT NULL,
      customer_name TEXT NOT NULL,
+     telephone TEXT NOT NULL,
+     email TEXT NOT NULL,
      start_time INTEGER NOT NULL,
      end_time INTEGER NOT NULL,
      price REAL NOT NULL,
      currency TEXT NOT NULL,
      photographer TEXT NOT NULL,
      photoshoot_type TEXT NOT NULL,
-     photoshoot_package TEXT NOT NULL
+     photoshoot_package TEXT NOT NULL,
+     processed_calendar INTEGER NOT NULL DEFAULT 0,
+     processed_email INTEGER NOT NULL DEFAULT 0,
+     email_text TEXT
   );")
 
 (defvar *master-table-init-query*
