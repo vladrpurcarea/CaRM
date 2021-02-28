@@ -1,6 +1,7 @@
 LISP ?= sbcl
 APPNAME ?= carm
 WEB_DIR ?= web/
+TEMPLATES_DIR ?= templates/
 
 build:
 	$(LISP) --dynamic-space-size 4096 \
@@ -9,6 +10,7 @@ build:
 		--eval '(asdf:make :$(APPNAME))' \
 		--eval '(quit)'
 	cp -rp $(WEB_DIR) $(APPNAME)/
+	cp -rp ${TEMPLATES_DIR} $(APPNAME)/
 	cp -p scripts/logs.sh $(APPNAME)/
 	cp -p  scripts/restart.sh $(APPNAME)/
 

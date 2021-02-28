@@ -33,6 +33,7 @@
 	       (:file "src/database")
 	       (:file "src/auth")
 	       (:file "src/spam")
+	       (:file "src/email-templates")
 	       (:file "src/contact-requests")
 	       (:file "src/appointments")
 	       (:file "src/carm")

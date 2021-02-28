@@ -20,22 +20,32 @@
 			    (assert-type (gethash "price" (@json-body)) 'real)
 			    (assert-type (gethash "currency" (@json-body)) 'string)
 			    (assert-type (gethash "photographer" (@json-body)) 'string)
+			    (assert-type (gethash "photoshootAddress" (@json-body)) 'string)
 			    (assert-type (gethash "photoshootType" (@json-body)) 'string)
 			    (assert-type (gethash "photoshootPackage" (@json-body)) 'string))
 	(http-204-no-content))
     (type-error () (http-400-bad-request))))
 
 
+(defroute post-appointment-email-template
+    ("/carm/api/v1/appointment/template"
+     :method :POST
+     :decorators (@log-errors @auth @json))
+    ()
+  (handler-case
+      (concretize-email-from-appointment (@json-body))
+    (error (e) (write e :escape nil))))
+
 ;;; INTERNAL
 
 (defun create-appointment (host customer-name telephone email start-time end-time price currency photographer
-			   photoshoot-type photoshoot-package)
+			   photoshoot-address photoshoot-type photoshoot-package)
   (syslog :info "Creating new appointment from ~A" host)
   (db-exec "INSERT INTO appointments (host, customer_name, telephone, email, start_time, end_time, price, currency, photographer,
-                                      photoshoot_type, photoshoot_package) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+                                      photoshoot_address, photoshoot_type, photoshoot_package) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	   (list host customer-name telephone email start-time end-time price currency photographer
-		 photoshoot-type photoshoot-package)))
+		 photoshoot-address photoshoot-type photoshoot-package)))
 
 (defun process-appointments-to-gcalendar ()
   (when *appointment-calendar-id*

@@ -12,3 +12,7 @@
   (local-time:format-rfc3339-timestring
    nil
    (local-time:universal-to-timestamp utime)))
+
+(defmacro setf-apply (place fn)
+  `(setf ,place
+	 (funcall ,fn ,place)))

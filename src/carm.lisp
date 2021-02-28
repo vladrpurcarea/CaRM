@@ -21,6 +21,7 @@
     (setup-schema)
     (setup-google-service-auth *google-rsa-key-path*)
     (setup-gsheets)
+    (setup-email-templates)
     (setup-cron-jobs)
     (setf *server* (make-server *port* *base-web-path*))
     (syslog :info "Starting server on port ~D." *port*)
