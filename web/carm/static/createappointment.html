@@ -1,0 +1,135 @@
+<html>
+    <head>
+	<title>CaRM - Create Appointment</title>
+	<link rel="stylesheet"  href="/carm/static/style.css" />
+        <link rel="stylesheet"  href="/carm/static/createappointmentstyle.css" />
+	<script src="/carm/static/js/fe.js"> </script>
+    </head>
+    <body>
+	<div class="logocontainer" >
+	  <a href="/carm/static/dashboard.html" >
+	      <img src="/carm/static/img/logo.png" />
+	  </a>
+	</div>
+	<div id="main-container" >
+	    <div id="left-container" >
+		<table id="appointment-table">
+		    <tr>
+			<th>Business</th>
+			<th class="input-th" >
+			    <select id="host-input" name="host-input" >
+				<option value="bergmann-fotografin-muenchen.de">Carmen Bergmann Munchen</option>
+				<option value="donna-bellini-fotografie-muenchen.de">Donna Bellini Munchen</option>
+				<option value="donna-bellini-fotografie-berlin.de">Donna Bellini Berlin</option>
+			    </select>
+			</th>
+		    </tr>
+		    <tr>
+			<th>Customer Name</th>
+			<th class="input-th" >
+			    <input type="text" id="customer-name-input" name="customer-name-input" >
+			</th>
+		    </tr>
+		    <tr>
+			<th>Telephone</th>
+			<th class="input-th" >
+			    <input type="text" id="telephone-input" name="telephone-input" placeholder="+1-541-754-3010">
+			</th>
+		    </tr>
+		    <tr>
+			<th>Email</th>
+			<th class="input-th" >
+			    <input type="text" id="email-input" name="email-input" placeholder="example@example.com" >
+			</th>
+		    </tr>
+		    <tr>
+			<th>Start Date</th>
+			<th>
+			    <input style="width: 80%" type="text" id="start-date-input" name="start-date-input" placeholder="dd.mm.yyyy" >
+			</th>
+			<th>
+			    <input style="width: 100%" type="text" id="start-time-input" name="start-time-input" placeholder="hh:mm" >
+			</th>
+		    </tr>
+		    <tr>
+			<th>Duration</th>
+			<th class="input-th" >
+			    <select id="duration-input" name="duration-input" >
+				<option value="1800">30 Minutes</option>
+				<option value="2700">45 Minutes</option>
+				<option value="3600">1 Hour</option>
+				<option value="4500">1 Hour 15 Minutes</option>
+				<option value="5400">1 Hour 30 Minutes</option>
+				<option value="6300">1 Hour 45 Minutes</option>
+				<option value="7200">2 Hours</option>
+				<option value="8100">2 Hours 15 Minutes</option>
+				<option value="9000">2 Hours 30 Minutes</option>
+				<option value="9900">2 Hours 45 Minutes</option>
+				<option value="10800">3 Hours</option>
+			    </select>
+			</th>
+		    </tr>
+		    <tr>
+			<th>Price</th>
+			<th>
+			    <input style="width: 80%" type="text" id="price-input" name="price-input" placeholder="200" >
+			</th>
+			<th>
+			    <select id="currency-input" name="currency-input" >
+				<option value="EUR" >EUR</option>
+			    </select>
+			</th>
+		    </tr>
+		    <tr>
+			<th>Photographer</th>
+			<th class="input-th" >
+			    <select id="photographer-input" name="photographer-input" >
+				<option value="Carmen Bergmann">Carmen Bergmann</option>
+			    </select>
+			</th>
+		    </tr>
+		    <tr>
+			<th>Address</th>
+			<th class="input-th" >
+			    <select id="address-input" name="address-input" >
+				<option value="Rosenheimerstr. 96, 81669 München">Rosenheimerstr. 96, 81669 Munchen</option>
+			    </select>
+			</th>
+		    </tr>
+		    
+		    <tr>
+			<th>Type</th>
+			<th class="input-th" >
+			    <select id="photshoot-type-input" name="photoshoot-type-input" >
+				<option value="outdoors">Outdoors</option>
+				<option value="outdoors">Swangerschaft</option>
+				<option value="outdoors">Neugeborene</option>
+			    </select>
+			</th>
+		    </tr>
+		    
+		    <tr>
+			<th>Package</th>
+			<th class="input-th" >
+			    <select id="photoshoot-package-input" name="photoshoot-package-input" >
+				<option value="joy">Joy</option>
+				<option value="happy">Happy</option>
+				<option value="love">Love</option>
+			    </select>
+			</th>
+		    </tr>
+		    
+		</table>
+		<div style="height: 10%; width: 100%;" >
+		    <input type="button" value="Generate Email" id="generate-email-button" class="button">
+		</div>
+	    </div>
+	    <div id="right-container" >
+		<input type="text" id="email-text-input" name="email-text-input" >
+		<div style="height: 10%; width: 100%;" >
+		    <input type="button" value="Save Appointment & Send Email" id="save-appointment-button" class="button" >
+		</div>
+	    </div>
+	</div>
+    </body>
+</html>
