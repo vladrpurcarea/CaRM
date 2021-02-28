@@ -6,6 +6,7 @@
 (defvar *months*
   '("Januar" "Februar" "März" "April" "Mai" "Juni" "Juli"
     "August" "September" "Oktober" "November" "Dezember"))
+(defvar *gallery-opening-time* (* 60 60 24 21)) ;; 21 days
 
 (defun setup-email-templates (&optional (email-templates-path *email-templates-path*))
   (read-email-templates email-templates-path))
@@ -22,9 +23,16 @@
 (defun concretize-email-from-appointment (appointment-ht)
   (let* ((aht (alexandria:copy-hash-table appointment-ht))
 	 (photoshoot-type (gethash "photoshootType" aht))
-	 (template (gethash photoshoot-type *email-templates*)))
+	 (template (gethash photoshoot-type *email-templates*))
+	 (start-time (gethash "startTime" aht))
+	 (end-time (gethash "endTime" aht)))
     (setf (gethash "date" aht)
-	  (to-day-month-date (gethash "startTime" aht)))
+	  (to-day-month-date start-time))
+    (setf (gethash "galleryOpeningDate" aht)
+	  (to-day-month-date (+ *gallery-opening-time*
+				start-time)))
+    (setf (gethash "duration" aht)
+	  (to-duration (- end-time start-time)))
     (setf-apply (gethash "startTime" aht) #'to-hour-minute)
     (setf-apply (gethash "endTime" aht) #'to-hour-minute)
     (concretize-template template aht)))
@@ -39,6 +47,15 @@
       (decode-universal-time universal-time)
     (declare (ignore sec))
     (format nil "~2,'0d:~2,'0d" hour min)))
+(defun to-duration (seconds)
+  (let* ((hours (round (/ seconds 3600)))
+	 (minutes (round (/ (- seconds (* hours 3600))
+			    60))))
+    (if (> hours 0)
+	(if (not (zerop minutes))
+	    (format nil "~d Stunde ~d Minuten" hours minutes)
+	    (format nil "~d Stunde" hours))
+      (format nil "~d Minuten" minutes))))
 
 (defun concretize-template (template values-ht)
   (reduce (lambda (acc k) (replace-in-template acc

@@ -1,6 +1,6 @@
-Hallo ${customer_name},
+Hallo ${customerName},
 Ich freue mich sehr darauf, dein Schwangerschafts-Shooting vom ${date} zu bestätigen.
-ZEIT: ${start_time} - ${end_time}
+ZEIT: ${startTime} - ${endTime}
 ORT: Rosenheimerstr. 96, 81669 München BITTE BEACHTEN SIE! Manchmal zeigt Google noch die
 Adresse unseres alten Studios an (Kirchenstraße). Dort befindet sich unser Studio nicht mehr. Unsere
 neue Adresse ist: Rosenheimerstr. 96, 81669 München.
@@ -11,8 +11,8 @@ die Outfits aufeinander abzustimmen, damit sie auf den Bildern ästhetisch zusam
 Als Inspiration kannst du dir gerne die hier zusammengestellten Bilder ansehen:
 https://www.pinterest.de/carmenbergmann/outfitsstudiofamilyshooting/
 PREIS: ${price} ${currency}
-PREIS BEINHALTET: Fotoshooting (${duration}) + ${digital_photos_num} Digitalbilder
-ZUSÄTZLICHE ZEIT: ${price_per_30_minutes}
+PREIS BEINHALTET: Fotoshooting (${duration}) + ${digitalPhotosNum} Digitalbilder
+ZUSÄTZLICHE ZEIT: 45 EUR/30 Minuten
 IHR FOTOGRAF wird ${photographer} sein.
 FREUNDLICHE BITTE: Wir bitten dich, während des Fotoshootings keine Fotos mit deinem Handy zu
 machen. Außerdem bitten wird dich, den Shooting-Bereich, der strahlend weiß ist, nur barfuß oder
@@ -22,7 +22,7 @@ ZAHLUNG UND LIEFERUNG: Am Ende des Shootings erhältst du eine Rechnung. Die Rec
 mit Karte im Studio gezahlt werden (EC-Karte wird bevorzugt, Kreditkarte ist ebenfalls möglich).
 Sobald die Zahlung eingegangen ist, werden wir eine Auswahl der Bilder treffen und für dich eine
 Galerie eröffnen, in der du die besten Bilder deines Fotoshootings ansehen kannst.
-Dieser Vorgang dauert 21 Tage. Deine Galerie wird am ${gallery_opening_date} für dich geöffnet.
+Dieser Vorgang dauert 21 Tage. Deine Galerie wird am ${galleryOpeningDate} für dich geöffnet.
 Darauffolgend kannst du dir die Bilder aus der Galerie aussuchen, die dir am besten gefallen. Falls du
 mehr Bilder auswählst, als in deinem Paket enthalten sind, wird eine zusätzliche Rechnung erstellt. 7
 Tage nachdem du deine finale Auswahl getroffen hast und ggf. die zweite Rechnung bezahlt wurde,
