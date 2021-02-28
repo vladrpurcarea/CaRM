@@ -4,6 +4,56 @@
 	<link rel="stylesheet"  href="/carm/static/style.css" />
         <link rel="stylesheet"  href="/carm/static/createappointmentstyle.css" />
 	<script src="/carm/static/js/fe.js"> </script>
+	<script>
+	 function generateEmail() {
+	     var host = document.getElementById('host-input').value
+	     var customerName = document.getElementById('customer-name-input').value
+	     var telephone = document.getElementById('telephone-input').value
+	     var email = document.getElementById('email-input').value
+	     var startDateComponent = document.getElementById('start-date-input').value
+	     var startTimeComponent = document.getElementById('start-time-input').value
+	     var startTime = new Date(startDateComponent + 'T' + startTimeComponent + ':00')
+	     var duration = document.getElementById('duration-input').value
+	     var endTime = new Date(startTime.getTime() + duration * 1000)
+	     var price = document.getElementById('price-input').value
+	     var currency = document.getElementById('currency-input').value
+	     var photographer = document.getElementById('photographer-input').value
+	     var address = document.getElementById('address-input').value
+	     var photoshootType = document.getElementById('photoshoot-type-input').value
+	     var photoshootPackage = document.getElementById('photoshoot-package-input').value
+
+	     var xhr = new XMLHttpRequest();
+	     var xhr = newXhrAuthReq("POST", "/carm/api/v1/appointment/template");
+	     xhr.onload = function () {
+		 if (this.status !== 200) {
+		     console.log("Error, status " + this.status);
+		     return;
+		 }
+		 var emailText = document.getElementById('email-text-input');
+		 var response = this.responseText.replace(/\r?\n/g, "\r\n")
+		 emailText.value = response
+	     }
+	     xhr.onerror = function() {
+		 console.log("XHR Error");
+	     }
+	     xhr.send(JSON.stringify({
+		 host,
+		 customerName,
+		 telephone,
+		 email,
+		 startTime: toUniversalTime(startTime),
+		 endTime: toUniversalTime(endTime),
+		 price,
+		 currency,
+		 photographer,
+		 photoshootAddress: address,
+		 photoshootType,
+		 photoshootPackage
+	     }));
+
+	 }
+	</script>
+
     </head>
     <body>
 	<div class="logocontainer" >
@@ -45,7 +95,7 @@
 		    <tr>
 			<th>Start Date</th>
 			<th>
-			    <input style="width: 80%" type="text" id="start-date-input" name="start-date-input" placeholder="dd.mm.yyyy" >
+			    <input style="width: 80%" type="text" id="start-date-input" name="start-date-input" placeholder="yyyy-mm-dd" >
 			</th>
 			<th>
 			    <input style="width: 100%" type="text" id="start-time-input" name="start-time-input" placeholder="hh:mm" >
@@ -100,7 +150,7 @@
 		    <tr>
 			<th>Type</th>
 			<th class="input-th" >
-			    <select id="photshoot-type-input" name="photoshoot-type-input" >
+			    <select id="photoshoot-type-input" name="photoshoot-type-input" >
 				<option value="outdoors">Outdoors</option>
 				<option value="outdoors">Swangerschaft</option>
 				<option value="outdoors">Neugeborene</option>
@@ -121,11 +171,11 @@
 		    
 		</table>
 		<div style="height: 10%; width: 100%;" >
-		    <input type="button" value="Generate Email" id="generate-email-button" class="button">
+		    <input type="button" value="Generate Email" id="generate-email-button" class="button" onclick="generateEmail()">
 		</div>
 	    </div>
 	    <div id="right-container" >
-		<input type="text" id="email-text-input" name="email-text-input" >
+		<textarea id="email-text-input" name="email-text-input" ></textarea>
 		<div style="height: 10%; width: 100%;" >
 		    <input type="button" value="Save Appointment & Send Email" id="save-appointment-button" class="button" >
 		</div>

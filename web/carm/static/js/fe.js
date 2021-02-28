@@ -15,6 +15,10 @@ function parseTimestamp(t) {
     return new Date((t-2208988800)*1000);
 }
 
+function toUniversalTime(date) {
+    return (date.getTime()/1000)+2208988800
+}
+
 function getParameters() {
     var prmstr = window.location.search.substr(1);
     return prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
