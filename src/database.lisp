@@ -48,7 +48,7 @@
      price REAL NOT NULL,
      currency TEXT NOT NULL,
      photographer TEXT NOT NULL,
-     photshoot_address TEXT NOT NULL,
+     photoshoot_address TEXT NOT NULL,
      photoshoot_type TEXT NOT NULL,
      photoshoot_package TEXT NOT NULL,
      processed_calendar INTEGER NOT NULL DEFAULT 0,

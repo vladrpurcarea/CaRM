@@ -15,6 +15,7 @@
 			    (assert-type (gethash "customerName" (@json-body)) 'string)
 			    (assert-type (gethash "telephone" (@json-body)) 'string)
 			    (assert-type (gethash "email" (@json-body)) 'string)
+			    (assert-type (gethash "emailText" (@json-body)) 'string)
 			    (assert-type (gethash "startTime" (@json-body)) 'fixnum)
 			    (assert-type (gethash "endTime" (@json-body)) 'fixnum)
 			    (assert-type (gethash "price" (@json-body)) 'real)
@@ -24,7 +25,7 @@
 			    (assert-type (gethash "photoshootType" (@json-body)) 'string)
 			    (assert-type (gethash "photoshootPackage" (@json-body)) 'string))
 	(http-204-no-content))
-    (type-error () (http-400-bad-request))))
+    (type-error (e) (http-400-bad-request (write e :escape nil)))))
 
 
 (defroute post-appointment-email-template
@@ -32,20 +33,25 @@
      :method :POST
      :decorators (@log-errors @auth @json))
     ()
+  (setf (hunchentoot:content-type*) "text/plain; charset=utf-8")
   (handler-case
       (concretize-email-from-appointment (@json-body))
     (error (e) (write e :escape nil))))
 
 ;;; INTERNAL
 
-(defun create-appointment (host customer-name telephone email start-time end-time price currency photographer
+(defun create-appointment (host customer-name telephone email email-text start-time end-time price currency photographer
 			   photoshoot-address photoshoot-type photoshoot-package)
   (syslog :info "Creating new appointment from ~A" host)
-  (db-exec "INSERT INTO appointments (host, customer_name, telephone, email, start_time, end_time, price, currency, photographer,
+  (db-exec "INSERT INTO appointments (host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,
                                       photoshoot_address, photoshoot_type, photoshoot_package) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
-	   (list host customer-name telephone email start-time end-time price currency photographer
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+	   (list host customer-name telephone email email-text start-time end-time price currency photographer
 		 photoshoot-address photoshoot-type photoshoot-package)))
+
+(defun process-appointments ()
+  (process-appointments-to-gcalendar)
+  (process-appointments-to-email))
 
 (defun process-appointments-to-gcalendar ()
   (when *appointment-calendar-id*
@@ -74,3 +80,14 @@
 					 :description description) ;; TODO: event :color
 		 (db-exec "UPDATE appointments SET processed_calendar = 1 WHERE id = ?"
 			  (list (gethash :|id| appmnt)))))))) 
+
+(defun process-appointments-to-email ()
+  (syslog :info "Processing appointments to email.")
+  (let ((unproc-appointments (db-fetch "SELECT id, email, email_text FROM appointments WHERE processed_email = 0")))
+    (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
+	  do (progn
+	       (send-mail (gethash :|email| appmnt)
+			  "Booking"
+			  (gethash :|email_text| appmnt))
+	       (db-exec "UPDATE appointments SET processed_email = 1 WHERE id = ?"
+			(list (gethash :|id| appmnt)))))))

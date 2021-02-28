@@ -16,7 +16,7 @@
   (loop for file in (directory (merge-pathnames email-templates-path #P "*.template"))
 	do (let ((filename (str:replace-all ".template" ""
 					    (file-namestring file)))
-		 (file (uiop:read-file-string file)))
+		 (file (uiop:read-file-string file :external-format :utf8)))
 	     (setf (gethash filename *email-templates*) file))
 	finally (return *email-templates*)))
 
