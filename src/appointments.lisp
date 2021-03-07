@@ -33,7 +33,7 @@
      :method :POST
      :decorators (@log-errors @auth @json))
     ()
-  (setf (hunchentoot:content-type*) "text/plain; charset=utf-8")
+  (setf (hunchentoot:content-type*) "text/html; charset=utf-8")
   (handler-case
       (concretize-email-from-appointment (@json-body))
     (error (e) (write e :escape nil))))

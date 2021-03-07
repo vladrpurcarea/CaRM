@@ -38,6 +38,145 @@
 		 photoshootPackage
 	     }
 	 }
+
+	 function getPhotoshootInfo(pHost, pType, pPackage) {
+	     var res = { duration: null, price: null, digitalPhotosNum: null };
+	     if (pHost === "bergmann-fotografin-muenchen.de") {
+		 if (pType === "babybauch") {
+		     if (pPackage === "joy") {
+			 res.duration = 45 * 60;
+			 res.price = 275;
+			 res.digitalPhotosNum = 5;
+		     } else if (pPackage === "happy") {
+			 res.duration = 60 * 60;
+			 res.price = 350;
+			 res.digitalPhotosNum = 10;
+		     } else if (pPackage === "love") {
+			 res.duration = 90 * 60;
+			 res.price = 390;
+			 res.digitalPhotosNum = 15;
+		     }
+		 } else if (pType === "neugeborene") {
+		     if (pPackage === "joy") {
+			 res.duration = 90 * 60;
+			 res.price = 330;
+			 res.digitalPhotosNum = 5;
+		     } else if (pPackage === "happy") {
+			 res.duration = 120 * 60;
+			 res.price = 390;
+			 res.digitalPhotosNum = 10;
+		     } else if (pPackage === "love") {
+			 res.duration = 120 * 60;
+			 res.price = 450;
+			 res.digitalPhotosNum = 15;
+		     }
+		 } else if (pType === "outdoors" || pType === "familie") {
+		     if (pPackage === "joy") {
+			 res.duration = 30 * 60;
+			 res.price = 275;
+			 res.digitalPhotosNum = 5;
+		     } else if (pPackage === "happy") {
+			 res.duration = 45 * 60;
+			 res.price = 350;
+			 res.digitalPhotosNum = 10;
+		     } else if (pPackage === "love") {
+			 res.duration = 60 * 60;
+			 res.price = 390;
+			 res.digitalPhotosNum = 15;
+		     }
+		 }
+	     } else if (pHost === "donna-bellini-fotografie-muenchen.de") {
+		 if (pType === "babybauch") {
+		     if (pPackage === "joy") {
+			 res.duration = 45 * 60;
+			 res.price = 275;
+			 res.digitalPhotosNum = 5;
+		     } else if (pPackage === "happy") {
+			 res.duration = 60 * 60;
+			 res.price = 350;
+			 res.digitalPhotosNum = 10;
+		     } else if (pPackage === "love") {
+			 res.duration = 90 * 60;
+			 res.price = 390;
+			 res.digitalPhotosNum = 15;
+		     }
+		 } else if (pType === "neugeborene") {
+		     if (pPackage === "joy") {
+			 res.duration = 90 * 60;
+			 res.price = 330;
+			 res.digitalPhotosNum = 5;
+		     } else if (pPackage === "happy") {
+			 res.duration = 120 * 60;
+			 res.price = 390;
+			 res.digitalPhotosNum = 10;
+		     } else if (pPackage === "love") {
+			 res.duration = 120 * 60;
+			 res.price = 450;
+			 res.digitalPhotosNum = 15;
+		     }
+		 } else if (pType === "familie") {
+		     if (pPackage === "joy") {
+			 res.duration = 30 * 60;
+			 res.price = 199;
+			 res.digitalPhotosNum = 5;
+		     } else if (pPackage === "happy") {
+			 res.duration = 45 * 60;
+			 res.price = 250;
+			 res.digitalPhotosNum = 10;
+		     } else if (pPackage === "love") {
+			 res.duration = 45 * 60;
+			 res.price = 320;
+			 res.digitalPhotosNum = 15;
+		     }
+		 } else if (pType === "outdoors") {
+		     if (pPackage === "joy") {
+			 res.duration = 30 * 60;
+			 res.price = 199;
+		 	 res.digitalPhotosNum = 5;
+		     } else if (pPackage === "happy") {
+			 res.duration = 45 * 60;
+			 res.price = 250;
+			 res.digitalPhotosNum = 10;
+		     } else if (pPackage === "love") {
+			 res.duration = 60 * 60;
+			 res.price = 320;
+			 res.digitalPhotosNum = 15;
+		     }
+		 }
+	     }  else if (pHost === "donna-bellini-fotografie-berlin.de") {
+		 if (pType === "babybauch" || pType === "familie" || pType === "outdoors") {
+		     if (pPackage === "joy") {
+			 res.duration = 45 * 60;
+			 res.price = 250;
+			 res.digitalPhotosNum = 10;
+		     } else if (pPackage === "happy") {
+			 res.duration = 60 * 60;
+			 res.price = 295;
+			 res.digitalPhotosNum = 15;
+		     } else if (pPackage === "love") {
+			 res.duration = 60 * 60;
+			 res.price = 350;
+			 res.digitalPhotosNum = 20;
+		     }
+		 } else if (pType === "neugeborene") {
+		     if (pPackage === "joy") {
+			 res.duration = 60 * 60;
+			 res.price = 250;
+			 res.digitalPhotosNum = 10;
+		     } else if (pPackage === "happy") {
+			 res.duration = 90 * 60;
+			 res.price = 295;
+			 res.digitalPhotosNum = 15;
+		     } else if (pPackage === "love") {
+			 res.duration = 90 * 60;
+			 res.price = 350;
+			 res.digitalPhotosNum = 20;
+		     }
+		 }
+	     }
+	     return res;
+	 }
+
 	 
 	 function generateEmail() {
 	     var xhr = new XMLHttpRequest();
@@ -54,7 +193,11 @@
 	     xhr.onerror = function() {
 		 console.log("XHR Error");
 	     }
-	     xhr.send(JSON.stringify(readAppointment()));
+
+	     var appointment = readAppointment();
+	     var photoshootInfo = getPhotoshootInfo(appointment["host"], appointment["photoshootType"], appointment["photoshootPackage"]);
+	     appointment["digitalPhotosNum"] = photoshootInfo.digitalPhotosNum;
+	     xhr.send(JSON.stringify(appointment));
 	 }
 	 
 	 function saveAppointment() {
@@ -96,121 +239,10 @@
 	     node.replaceWith(newNode);
 	     updateHostFormFields();
 	 }
-
-	 function getDurationAndPrice(pHost, pType, pPackage) {
-	     var res = { duration: null, price: null };
-	     if (pHost === "bergmann-fotografin-muenchen.de") {
-		 if (pType === "babybauch") {
-		     if (pPackage === "joy") {
-			 res.duration = 45 * 60;
-			 res.price = 275;
-		     } else if (pPackage === "happy") {
-			 res.duration = 60 * 60;
-			 res.price = 350;
-		     } else if (pPackage === "love") {
-			 res.duration = 90 * 60;
-			 res.price = 390;
-		     }
-		 } else if (pType === "neugeborene") {
-		     if (pPackage === "joy") {
-			 res.duration = 90 * 60;
-			 res.price = 330;
-		     } else if (pPackage === "happy") {
-			 res.duration = 120 * 60;
-			 res.price = 390;
-		     } else if (pPackage === "love") {
-			 res.duration = 120 * 60;
-			 res.price = 450;
-		     }
-		 } else if (pType === "outdoors" || pType === "familie") {
-		     if (pPackage === "joy") {
-			 res.duration = 30 * 60;
-			 res.price = 275;
-		     } else if (pPackage === "happy") {
-			 res.duration = 45 * 60;
-			 res.price = 350;
-		     } else if (pPackage === "love") {
-			 res.duration = 60 * 60;
-			 res.price = 390;
-		     }
-		 }
-	     } else if (pHost === "donna-bellini-fotografie-muenchen.de") {
-		 if (pType === "babybauch") {
-		     if (pPackage === "joy") {
-			 res.duration = 45 * 60;
-			 res.price = 275;
-		     } else if (pPackage === "happy") {
-			 res.duration = 60 * 60;
-			 res.price = 350;
-		     } else if (pPackage === "love") {
-			 res.duration = 90 * 60;
-			 res.price = 390;
-		     }
-		 } else if (pType === "neugeborene") {
-		     if (pPackage === "joy") {
-			 res.duration = 90 * 60;
-			 res.price = 330;
-		     } else if (pPackage === "happy") {
-			 res.duration = 120 * 60;
-			 res.price = 390;
-		     } else if (pPackage === "love") {
-			 res.duration = 120 * 60;
-			 res.price = 450;
-		     }
-		 } else if (pType === "familie") {
-		     if (pPackage === "joy") {
-			 res.duration = 30 * 60;
-			 res.price = 199;
-		     } else if (pPackage === "happy") {
-			 res.duration = 45 * 60;
-			 res.price = 250;
-		     } else if (pPackage === "love") {
-			 res.duration = 45 * 60;
-			 res.price = 320;
-		     }
-		 } else if (pType === "outdoors") {
-		     if (pPackage === "joy") {
-			 res.duration = 30 * 60;
-			 res.price = 199;
-		     } else if (pPackage === "happy") {
-			 res.duration = 45 * 60;
-			 res.price = 250;
-		     } else if (pPackage === "love") {
-			 res.duration = 60 * 60;
-			 res.price = 320;
-		     }
-		 }
-	     }  else if (pHost === "donna-bellini-fotografie-berlin.de") {
-		 if (pType === "babybauch" || pType === "familie" || pType === "outdoors") {
-		     if (pPackage === "joy") {
-			 res.duration = 45 * 60;
-			 res.price = 250;
-		     } else if (pPackage === "happy") {
-			 res.duration = 60 * 60;
-			 res.price = 295;
-		     } else if (pPackage === "love") {
-			 res.duration = 60 * 60;
-			 res.price = 350;
-		     }
-		 } else if (pType === "neugeborene") {
-		     if (pPackage === "joy") {
-			 res.duration = 60 * 60;
-			 res.price = 250;
-		     } else if (pPackage === "happy") {
-			 res.duration = 90 * 60;
-			 res.price = 295;
-		     } else if (pPackage === "love") {
-			 res.duration = 90 * 60;
-			 res.price = 350;
-		     }
-		 }
-	     }
-	     return res;
-	 }
-
+	 
 	 function updateDurationAndPrice() {
 	     var appointment = readAppointment();
-	     var result = getDurationAndPrice(appointment["host"], appointment["photoshootType"], appointment["photoshootPackage"]);
+	     var result = getPhotoshootInfo(appointment["host"], appointment["photoshootType"], appointment["photoshootPackage"]);
 	     document.getElementById('price-input').value = result.price;
 	     document.getElementById('duration-input').value = result.duration;
 	 }

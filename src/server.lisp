@@ -2,6 +2,9 @@
 
 (in-package #:carm)
 
+(setf hunchentoot:*hunchentoot-default-external-format*
+hunchentoot::+utf-8+)
+
 (defun make-server (&optional (port 4200) (document-root #p"./"))
   (make-instance 'easy-routes:easy-routes-acceptor
 		 :port port
@@ -17,8 +20,8 @@
 (defun @json (next)
   (setf (hunchentoot:content-type*) "application/json")
   (setf (@json-body)
-	(yason:parse 
-	 (hunchentoot:raw-post-data :want-stream t)))
+	(from-json
+	 (hunchentoot:raw-post-data)))
   (funcall next))
 
 (defun @json-out (next)
