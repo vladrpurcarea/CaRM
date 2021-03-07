@@ -94,10 +94,129 @@
 	     }
 	     newNode.id = nodeId;
 	     node.replaceWith(newNode);
-	     updateFormFields();
+	     updateHostFormFields();
+	 }
+
+	 function getDurationAndPrice(pHost, pType, pPackage) {
+	     var res = { duration: null, price: null };
+	     if (pHost === "bergmann-fotografin-muenchen.de") {
+		 if (pType === "babybauch") {
+		     if (pPackage === "joy") {
+			 res.duration = 45 * 60;
+			 res.price = 275;
+		     } else if (pPackage === "happy") {
+			 res.duration = 60 * 60;
+			 res.price = 350;
+		     } else if (pPackage === "love") {
+			 res.duration = 90 * 60;
+			 res.price = 390;
+		     }
+		 } else if (pType === "neugeborene") {
+		     if (pPackage === "joy") {
+			 res.duration = 90 * 60;
+			 res.price = 330;
+		     } else if (pPackage === "happy") {
+			 res.duration = 120 * 60;
+			 res.price = 390;
+		     } else if (pPackage === "love") {
+			 res.duration = 120 * 60;
+			 res.price = 450;
+		     }
+		 } else if (pType === "outdoors" || pType === "familie") {
+		     if (pPackage === "joy") {
+			 res.duration = 30 * 60;
+			 res.price = 275;
+		     } else if (pPackage === "happy") {
+			 res.duration = 45 * 60;
+			 res.price = 350;
+		     } else if (pPackage === "love") {
+			 res.duration = 60 * 60;
+			 res.price = 390;
+		     }
+		 }
+	     } else if (pHost === "donna-bellini-fotografie-muenchen.de") {
+		 if (pType === "babybauch") {
+		     if (pPackage === "joy") {
+			 res.duration = 45 * 60;
+			 res.price = 275;
+		     } else if (pPackage === "happy") {
+			 res.duration = 60 * 60;
+			 res.price = 350;
+		     } else if (pPackage === "love") {
+			 res.duration = 90 * 60;
+			 res.price = 390;
+		     }
+		 } else if (pType === "neugeborene") {
+		     if (pPackage === "joy") {
+			 res.duration = 90 * 60;
+			 res.price = 330;
+		     } else if (pPackage === "happy") {
+			 res.duration = 120 * 60;
+			 res.price = 390;
+		     } else if (pPackage === "love") {
+			 res.duration = 120 * 60;
+			 res.price = 450;
+		     }
+		 } else if (pType === "familie") {
+		     if (pPackage === "joy") {
+			 res.duration = 30 * 60;
+			 res.price = 199;
+		     } else if (pPackage === "happy") {
+			 res.duration = 45 * 60;
+			 res.price = 250;
+		     } else if (pPackage === "love") {
+			 res.duration = 45 * 60;
+			 res.price = 320;
+		     }
+		 } else if (pType === "outdoors") {
+		     if (pPackage === "joy") {
+			 res.duration = 30 * 60;
+			 res.price = 199;
+		     } else if (pPackage === "happy") {
+			 res.duration = 45 * 60;
+			 res.price = 250;
+		     } else if (pPackage === "love") {
+			 res.duration = 60 * 60;
+			 res.price = 320;
+		     }
+		 }
+	     }  else if (pHost === "donna-bellini-fotografie-berlin.de") {
+		 if (pType === "babybauch" || pType === "familie" || pType === "outdoors") {
+		     if (pPackage === "joy") {
+			 res.duration = 45 * 60;
+			 res.price = 250;
+		     } else if (pPackage === "happy") {
+			 res.duration = 60 * 60;
+			 res.price = 295;
+		     } else if (pPackage === "love") {
+			 res.duration = 60 * 60;
+			 res.price = 350;
+		     }
+		 } else if (pType === "neugeborene") {
+		     if (pPackage === "joy") {
+			 res.duration = 60 * 60;
+			 res.price = 250;
+		     } else if (pPackage === "happy") {
+			 res.duration = 90 * 60;
+			 res.price = 295;
+		     } else if (pPackage === "love") {
+			 res.duration = 90 * 60;
+			 res.price = 350;
+		     }
+		 }
+	     }
+	     return res;
+	 }
+
+	 function updateDurationAndPrice() {
+	     var appointment = readAppointment();
+	     var result = getDurationAndPrice(appointment["host"], appointment["photoshootType"], appointment["photoshootPackage"]);
+	     document.getElementById('price-input').value = result.price;
+	     document.getElementById('duration-input').value = result.duration;
 	 }
 	 
-	 function updateFormFields() {
+	 
+	 function updateHostFormFields() {
 	     var appointment = readAppointment();
 	     var photographerNode = document.getElementById("photographer-input");
 	     var addressNode = document.getElementById("address-input");
@@ -126,10 +245,11 @@
 			 break;
 		     case "donna-bellini-fotografie-berlin.de":
 			 addOptionToSelect(addressNode, "Reichsstraße 1, 14050 Charlottenburg Berlin", "Reichsstraße 1, 14050 Charlottenburg Berlin");
-			 break;
+		 break;
 		 }
 	     }
 
+	     updateDurationAndPrice();
 	 }
 	 
 	</script>
@@ -147,7 +267,7 @@
 		    <tr>
 			<th>Business</th>
 			<th class="input-th" >
-			    <select id="host-input" name="host-input" onchange="updateFormFields()">
+			    <select id="host-input" name="host-input" onchange="updateHostFormFields()">
 				<option value="bergmann-fotografin-muenchen.de">Carmen Bergmann Munchen</option>
 				<option value="donna-bellini-fotografie-muenchen.de">Donna Bellini Munchen</option>
 				<option value="donna-bellini-fotografie-berlin.de">Donna Bellini Berlin</option>
@@ -176,10 +296,11 @@
 		    <tr>
 			<th>Type</th>
 			<th class="input-th" >
-			    <select id="photoshoot-type-input" name="photoshoot-type-input" onchange="updateFormFields()">
+			    <select id="photoshoot-type-input" name="photoshoot-type-input" onchange="updateDurationAndPrice()">
 				<option value="outdoors">Outdoors</option>
-				<option value="outdoors">Swangerschaft</option>
-				<option value="outdoors">Neugeborene</option>
+				<option value="babybauch">Babybauch</option>
+				<option value="familie">Familie</option>
+				<option value="neugeborene">Neugeborene</option>
 			    </select>
 			</th>
 		    </tr>
@@ -187,7 +308,7 @@
 		    <tr>
 			<th>Package</th>
 			<th class="input-th" >
-			    <select id="photoshoot-package-input" name="photoshoot-package-input" onchange="updateFormFields()">
+			    <select id="photoshoot-package-input" name="photoshoot-package-input" onchange="updateDurationAndPrice()">
 				<option value="joy">Joy</option>
 				<option value="happy">Happy</option>
 				<option value="love">Love</option>
@@ -268,5 +389,6 @@
 		</div>
 	    </div>
 	</div>
+	<script>updateHostFormFields();</script>
     </body>
 </html>
