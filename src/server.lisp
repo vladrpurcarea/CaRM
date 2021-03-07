@@ -21,7 +21,7 @@ hunchentoot::+utf-8+)
   (setf (hunchentoot:content-type*) "application/json")
   (setf (@json-body)
 	(from-json
-	 (hunchentoot:raw-post-data)))
+	 (hunchentoot:raw-post-data :force-text t)))
   (funcall next))
 
 (defun @json-out (next)

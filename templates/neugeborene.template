@@ -1,16 +1,23 @@
 Hallo ${customerName},
-Ich freue mich sehr darauf, dein Schwangerschafts-Shooting vom ${date} zu bestätigen.
+
+Ich freue mich sehr darauf, dein Neugebo1renen-Shooting vom ${date} zu
+bestätigen.
 ZEIT: ${startTime} - ${endTime}
 ORT: ${photoshootAddress}
-OUTFITS: Alle Outfits auf unserer Webseite in dem Bereich „SCHWANGERSCHAFT“
-(https://bergmann-fotografin-muenchen.de/babybauch-shooting-muenchen/) stehen dir kostenfrei
-zur Verfügung. Falls du gerne Familienbilder mit eigenen Outfits möchtest, würde ich darum bitten,
-die Outfits aufeinander abzustimmen, damit sie auf den Bildern ästhetisch zusammenwirken.
-Als Inspiration kannst du dir gerne die hier zusammengestellten Bilder ansehen:
+OUTFITS: Für dein kleines Baby werden wir Outfits zur Verfügung stellen. Für Familienbilder bitte ich
+dich darum, die Outfits so zusammen zu stellen, dass sie auf den Bildern ästhetisch zusammen
+wirken. Als Inspiration kannst du gerne einen Blick auf die folgende Zusammenstellung werfen:
 https://www.pinterest.de/carmenbergmann/outfitsstudiofamilyshooting/
+Zudem würde ich dich darum bitten, Outfits in sehr dunklen Farben zu vermeiden. Helle Farben und
+Weiß passen besser zu solch einem freudigen Lebensmoment.
+STIL DER FOTOGRAFIE: Unser Stil ist natürlich. Wir sehen gerne viel Haut. Wir benutzen keine
+Requisiten wie Körbe, Eimer, künstliche Blumen etc. Das Baby steht im Fokus und unsere Bilder
+werden dich an die ersten Lebenstage des Babys in dieser Welt erinnern. Hier kannst du dir einige
+Beispielsbilder ansehen, die für unseren Stil repräsentativ sind: https://bergmann-fotografin-
+muenchen.de/babies-2/.
 PREIS: ${price} ${currency}
 PREIS BEINHALTET: Fotoshooting (${duration}) + ${digitalPhotosNum} Digitalbilder
-ZUSÄTZLICHE ZEIT: 45 EUR/30 Minuten
+ZUSÄTZLICHE ZEIT: 45 EURO/30 Minuten
 IHR FOTOGRAF wird ${photographer} sein.
 FREUNDLICHE BITTE: Wir bitten dich, während des Fotoshootings keine Fotos mit deinem Handy zu
 machen. Außerdem bitten wird dich, den Shooting-Bereich, der strahlend weiß ist, nur barfuß oder
@@ -19,12 +26,14 @@ kannst du deine Straßenschuhe natürlich tragen.
 ZAHLUNG UND LIEFERUNG: Am Ende des Shootings erhältst du eine Rechnung. Die Rechnung kann
 mit Karte im Studio gezahlt werden (EC-Karte wird bevorzugt, Kreditkarte ist ebenfalls möglich).
 Sobald die Zahlung eingegangen ist, werden wir eine Auswahl der Bilder treffen und für dich eine
-Galerie eröffnen, in der du die besten Bilder deines Fotoshootings ansehen kannst.
-Dieser Vorgang dauert 21 Tage. Deine Galerie wird am ${galleryOpeningDate} für dich geöffnet.
+Galerie eröffnen, in der du die besten Bilder deines Fotoshootings ansehen kannst. Dieser Vorgang
+dauert 21 Tage.
+Deine Galerie wird also am ${galleryOpeningDate} für dich geöffnet.
 Darauffolgend kannst du dir die Bilder aus der Galerie aussuchen, die dir am besten gefallen. Falls du
 mehr Bilder auswählst, als in deinem Paket enthalten sind, wird eine zusätzliche Rechnung erstellt. 7
 Tage nachdem du deine finale Auswahl getroffen hast und ggf. die zweite Rechnung bezahlt wurde,
 wirst du deine endgültigen Bilder über einen Download-Link in hochauflösender Resolution erhalten.
+
 Bitte speichere dir meine Telefonnummer ein. Im Falle von kurzfristig notwendiger Kommunikation
 kann diese hilfreich sein.
 Mit den allerbesten Grüßen und bis bald,
