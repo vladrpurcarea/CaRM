@@ -75,6 +75,63 @@
 	     }
 	     xhr.send(JSON.stringify(appointment));
 	 }
+
+	 function addOptionToSelect(selectNode, value, title) {
+	     var option = document.createElement("option");
+	     option.value = value
+	     option.appendChild(document.createTextNode(title));
+	     selectNode.appendChild(option);
+	 }
+	 
+	 function swapCustomField(nodeId) {
+	     var node = document.getElementById(nodeId);
+	     var newNode;
+	     if (node.nodeName === "SELECT") {
+		 newNode = document.createElement("input");
+		 newNode.attributes["type"] = "text";
+	     } else {
+		 newNode = document.createElement("select");
+	     }
+	     newNode.id = nodeId;
+	     node.replaceWith(newNode);
+	     updateFormFields();
+	 }
+	 
+	 function updateFormFields() {
+	     var appointment = readAppointment();
+	     var photographerNode = document.getElementById("photographer-input");
+	     var addressNode = document.getElementById("address-input");
+	     // photographer and address changes, based on host (website)
+	     if (photographerNode.nodeName === "SELECT") {
+		 photographerNode.textContent = ""; // clear photographer node
+		 switch(appointment["host"]) {
+		     case "bergmann-fotografin-muenchen.de":
+		     case "donna-bellini-fotografie-muenchen.de":
+			 addOptionToSelect(photographerNode, "Nikol Bergmann", "Nikol Bergmann");
+			 addOptionToSelect(photographerNode, "Valentina Bergmann","Valentina Bergmann");
+			 addOptionToSelect(photographerNode, "Carmen Bergmann", "Carmen Bergmann");
+			 break;
+		     case "donna-bellini-fotografie-berlin.de":
+			 addOptionToSelect(photographerNode, "Larisa", "Larisa");
+			 break;
+		 }
+	     }
+
+	     if (addressNode.nodeName === "SELECT") {
+		 addressNode.textContent = ""; // clear address node
+		 switch(appointment["host"]) {
+		     case "bergmann-fotografin-muenchen.de":
+		     case "donna-bellini-fotografie-muenchen.de":
+			 addOptionToSelect(addressNode, "Rosenheimerstr. 96, 81669 München", "Rosenheimerstr. 96, 81669 München");
+			 break;
+		     case "donna-bellini-fotografie-berlin.de":
+			 addOptionToSelect(addressNode, "Reichsstraße 1, 14050 Charlottenburg Berlin", "Reichsstraße 1, 14050 Charlottenburg Berlin");
+			 break;
+		 }
+	     }
+
+	 }
+	 
 	</script>
 
     </head>
@@ -90,7 +147,7 @@
 		    <tr>
 			<th>Business</th>
 			<th class="input-th" >
-			    <select id="host-input" name="host-input" >
+			    <select id="host-input" name="host-input" onchange="updateFormFields()">
 				<option value="bergmann-fotografin-muenchen.de">Carmen Bergmann Munchen</option>
 				<option value="donna-bellini-fotografie-muenchen.de">Donna Bellini Munchen</option>
 				<option value="donna-bellini-fotografie-berlin.de">Donna Bellini Berlin</option>
@@ -115,6 +172,29 @@
 			    <input type="text" id="email-input" name="email-input" placeholder="example@example.com" >
 			</th>
 		    </tr>
+
+		    <tr>
+			<th>Type</th>
+			<th class="input-th" >
+			    <select id="photoshoot-type-input" name="photoshoot-type-input" onchange="updateFormFields()">
+				<option value="outdoors">Outdoors</option>
+				<option value="outdoors">Swangerschaft</option>
+				<option value="outdoors">Neugeborene</option>
+			    </select>
+			</th>
+		    </tr>
+		    
+		    <tr>
+			<th>Package</th>
+			<th class="input-th" >
+			    <select id="photoshoot-package-input" name="photoshoot-package-input" onchange="updateFormFields()">
+				<option value="joy">Joy</option>
+				<option value="happy">Happy</option>
+				<option value="love">Love</option>
+			    </select>
+			</th>
+		    </tr>
+
 		    <tr>
 			<th>Start Date</th>
 			<th>
@@ -160,6 +240,9 @@
 				<option value="Carmen Bergmann">Carmen Bergmann</option>
 			    </select>
 			</th>
+			<th style="font-weight: normal; font-size: 12px;">
+			    <input type="checkbox" onclick="swapCustomField('photographer-input')"> custom
+			</th>
 		    </tr>
 		    <tr>
 			<th>Address</th>
@@ -168,29 +251,10 @@
 				<option value="Rosenheimerstr. 96, 81669 München">Rosenheimerstr. 96, 81669 Munchen</option>
 			    </select>
 			</th>
-		    </tr>
-		    
-		    <tr>
-			<th>Type</th>
-			<th class="input-th" >
-			    <select id="photoshoot-type-input" name="photoshoot-type-input" >
-				<option value="outdoors">Outdoors</option>
-				<option value="outdoors">Swangerschaft</option>
-				<option value="outdoors">Neugeborene</option>
-			    </select>
+			<th style="font-weight: normal; font-size: 12px;">
+			    <input type="checkbox" onclick="swapCustomField('address-input')"> custom
 			</th>
-		    </tr>
-		    
-		    <tr>
-			<th>Package</th>
-			<th class="input-th" >
-			    <select id="photoshoot-package-input" name="photoshoot-package-input" >
-				<option value="joy">Joy</option>
-				<option value="happy">Happy</option>
-				<option value="love">Love</option>
-			    </select>
-			</th>
-		    </tr>
+		    </tr>		    
 		    
 		</table>
 		<div style="height: 10%; width: 100%;" >
