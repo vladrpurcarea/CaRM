@@ -281,7 +281,6 @@
 		 }
 	     }
 
-	     updateDurationAndPrice();
 	 }
 
 	 function fillInFieldsFromQueryParams() {
@@ -321,7 +320,7 @@
 		    <tr>
 			<th>Business</th>
 			<th class="input-th" >
-			    <select id="host-input" name="host-input" onchange="updateHostFormFields()">
+			    <select id="host-input" name="host-input" onchange="updateHostFormFields();updateDurationAndPrice();">
 				<option value="bergmann-fotografin-muenchen.de">Carmen Bergmann Munchen</option>
 				<option value="donna-bellini-fotografie-muenchen.de">Donna Bellini Munchen</option>
 				<option value="donna-bellini-fotografie-berlin.de">Donna Bellini Berlin</option>
