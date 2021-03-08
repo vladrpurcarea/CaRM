@@ -1,6 +1,6 @@
 Hallo ${customerName},
 
-Ich freue mich sehr darauf, dein Neugebo1renen-Shooting vom ${date} zu
+Ich freue mich sehr darauf, dein Neugeborenen-Shooting vom ${date} zu
 bestätigen.
 ZEIT: ${startTime} - ${endTime}
 ORT: ${photoshootAddress}

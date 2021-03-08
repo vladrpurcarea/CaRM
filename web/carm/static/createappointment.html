@@ -290,16 +290,16 @@
 	     var telephone = document.getElementById('telephone-input')
 	     var email = document.getElementById('email-input')
 
-	     if (params.get("host")) {
+	     if (params.has("host")) {
 		 host.value = params.get("host");
 	     }
-	     if (params.get("customerName")) {
+	     if (params.has("customerName")) {
 		 customerName.value = params.get("customerName");
 	     }
-	     if (params.get("telephone")) {
+	     if (params.has("telephone")) {
 		 telephone.value = params.get("telephone");
 	     }
-	     if (params.get("email")) {
+	     if (params.has("email")) {
 		 email.value = params.get("email");
 	     }
 	     
@@ -371,7 +371,7 @@
 
 		    <tr>
 			<th>Start Date</th>
-			<th>
+			<th class="input-th" >
 			    <input style="width: 80%" type="date" id="start-date-input" name="start-date-input" placeholder="yyyy-mm-dd" required>
 			</th>
 			<th>
@@ -442,6 +442,6 @@
 		</div>
 	    </div>
 	</div>
-	<script>updateHostFormFields();fillInFieldsFromQueryParams();</script>
+	<script>fillInFieldsFromQueryParams();updateHostFormFields();</script>
     </body>
 </html>

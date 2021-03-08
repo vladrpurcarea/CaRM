@@ -24,11 +24,12 @@
     word-wrap: break-word;
 }
 
-#seen-container {
+.viewreq-container {
     display: flex;
     width: 100%;
     max-width: 40em;
     margin: auto;
+    justify-content: center;
 }
 
 #seen-icon {
@@ -44,9 +45,7 @@
     transition: all 0.2s ease 0s;
 }
 
-#seen-button {
-    max-width: 55%;
-    width: 55%;
+.viewreq-button {
     display: flex;
     margin: 1.8em auto;
     padding: 1.2em;
@@ -57,7 +56,18 @@
     transition: all 0.2s ease 0s;
 }
 
-#seen-button:hover {
+#seen-button {
+    width: 55%;
+    max-width: 55%;
+}
+
+#to-appointment-button {
+    width: 90%;
+    margin: 0 1.8em;
+    max-width: 90%;
+}
+
+.viewreq-button:hover {
     cursor: pointer;
     color: #ffffff !important;
     font-color: #ffffff;

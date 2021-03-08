@@ -13,9 +13,12 @@
 	</div>
 	<div id="requestcontainer" class="container">  
 	</div>
-	<div id="seen-container">
+	<div id="seen-container" class="viewreq-container" >
 	    <div id="seen-icon"></div>
-	    <div id="seen-button"></div>
+	    <div id="seen-button" class="viewreq-button"></div>
+	</div>
+	<div id="to-appointment-container" class="viewreq-container">
+	    <div id="to-appointment-button" class="viewreq-button" >To Appointment</div>
 	</div>
 	<script>
 	  function addField(reqsContainer, fieldName, fieldValue, flip) {
@@ -67,6 +70,17 @@
 	 }
 	 
 	 getRequests();
+	 document.getElementById("to-appointment-button").onclick = function() {
+	     var id = getParameters().id;
+	     var xhr = newXhrAuthReq("GET", "/carm/api/v1/contact-request/" + id);
+	     xhr.onload = function () {
+		 var request = JSON.parse(this.responseText).data;
+		 var url = "/carm/static/createappointment.html?customerName=" + request.name + "&telephone=" + request.phone + "&email=" + request.email + "&host=" +request.host;
+		 window.location.href = url;
+	     }
+	     xhr.send(null);
+	 }
+	     
 	</script>
     </body>
 </html>
