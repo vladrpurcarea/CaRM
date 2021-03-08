@@ -88,6 +88,7 @@
 	  do (progn
 	       (send-mail (gethash :|email| appmnt)
 			  "Booking"
-			  (gethash :|email_text| appmnt))
+			  (gethash :|email_text| appmnt)
+			  :signature (get-email-signature))
 	       (db-exec "UPDATE appointments SET processed_email = 1 WHERE id = ?"
 			(list (gethash :|id| appmnt)))))))

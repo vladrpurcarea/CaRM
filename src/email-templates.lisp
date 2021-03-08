@@ -37,6 +37,9 @@
     (setf-apply (gethash "endTime" aht) #'to-hour-minute)
     (concretize-template template aht)))
 
+(defun get-email-signature ()
+  (gethash "signature" *email-templates*))
+
 (defun to-day-month-date (universal-time)
   (multiple-value-bind (sec min hour date month)
       (decode-universal-time universal-time)
