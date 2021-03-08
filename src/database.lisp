@@ -41,7 +41,7 @@
      id INTEGER PRIMARY KEY,
      host TEXT NOT NULL,
      customer_name TEXT NOT NULL,
-     telephone TEXT NOT NULL,
+     telephone TEXT,
      email TEXT NOT NULL,
      start_time INTEGER NOT NULL,
      end_time INTEGER NOT NULL,

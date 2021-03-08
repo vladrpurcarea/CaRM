@@ -277,11 +277,33 @@
 			 break;
 		     case "donna-bellini-fotografie-berlin.de":
 			 addOptionToSelect(addressNode, "Reichsstraße 1, 14050 Charlottenburg Berlin", "Reichsstraße 1, 14050 Charlottenburg Berlin");
-		 break;
+			 break;
 		 }
 	     }
 
 	     updateDurationAndPrice();
+	 }
+
+	 function fillInFieldsFromQueryParams() {
+	     params = new URLSearchParams(window.location.search);
+	     var host = document.getElementById('host-input')
+	     var customerName = document.getElementById('customer-name-input')
+	     var telephone = document.getElementById('telephone-input')
+	     var email = document.getElementById('email-input')
+
+	     if (params.get("host")) {
+		 host.value = params.get("host");
+	     }
+	     if (params.get("customerName")) {
+		 customerName.value = params.get("customerName");
+	     }
+	     if (params.get("telephone")) {
+		 telephone.value = params.get("telephone");
+	     }
+	     if (params.get("email")) {
+		 email.value = params.get("email");
+	     }
+	     
 	 }
 	 
 	</script>
@@ -309,7 +331,7 @@
 		    <tr>
 			<th>Customer Name</th>
 			<th class="input-th" >
-			    <input type="text" id="customer-name-input" name="customer-name-input" >
+			    <input type="text" id="customer-name-input" name="customer-name-input" required>
 			</th>
 		    </tr>
 		    <tr>
@@ -321,7 +343,7 @@
 		    <tr>
 			<th>Email</th>
 			<th class="input-th" >
-			    <input type="text" id="email-input" name="email-input" placeholder="example@example.com" >
+			    <input type="text" id="email-input" name="email-input" placeholder="example@example.com" required>
 			</th>
 		    </tr>
 
@@ -351,10 +373,10 @@
 		    <tr>
 			<th>Start Date</th>
 			<th>
-			    <input style="width: 80%" type="text" id="start-date-input" name="start-date-input" placeholder="yyyy-mm-dd" >
+			    <input style="width: 80%" type="date" id="start-date-input" name="start-date-input" placeholder="yyyy-mm-dd" required>
 			</th>
 			<th>
-			    <input style="width: 100%" type="text" id="start-time-input" name="start-time-input" placeholder="hh:mm" >
+			    <input style="width: 100%" type="text" id="start-time-input" name="start-time-input" placeholder="hh:mm" required>
 			</th>
 		    </tr>
 		    <tr>
@@ -378,7 +400,7 @@
 		    <tr>
 			<th>Price</th>
 			<th>
-			    <input style="width: 80%" type="text" id="price-input" name="price-input" placeholder="200" >
+			    <input style="width: 80%" type="text" id="price-input" name="price-input" placeholder="200" required>
 			</th>
 			<th>
 			    <select id="currency-input" name="currency-input" >
@@ -421,6 +443,6 @@
 		</div>
 	    </div>
 	</div>
-	<script>updateHostFormFields();</script>
+	<script>updateHostFormFields();fillInFieldsFromQueryParams();</script>
     </body>
 </html>

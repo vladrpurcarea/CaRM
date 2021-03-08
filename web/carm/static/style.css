@@ -32,3 +32,14 @@ body {
     flex-direction: column;
     margin: auto;
 }
+
+.defaultbutton {
+    color: #494949 !important;
+    text-decoration: none;
+    padding: 1.2em;
+    background: #ffffff;
+    border: 0.1em solid #c9c9c9 !important;
+    border-radius: 6px;
+    display: inline-block;
+    transition: all 0.2s ease 0s;
+}

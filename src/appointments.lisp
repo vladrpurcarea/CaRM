@@ -13,7 +13,7 @@
       (progn
 	(create-appointment (assert-type (gethash "host" (@json-body)) 'string)
 			    (assert-type (gethash "customerName" (@json-body)) 'string)
-			    (assert-type (gethash "telephone" (@json-body)) 'string)
+			    (gethash "telephone" (@json-body))
 			    (assert-type (gethash "email" (@json-body)) 'string)
 			    (assert-type (gethash "emailText" (@json-body)) 'string)
 			    (assert-type (gethash "startTime" (@json-body)) 'fixnum)
