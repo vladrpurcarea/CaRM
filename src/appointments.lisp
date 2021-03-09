@@ -62,8 +62,8 @@
       (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
 	    do (let ((summary (format nil "~A ~A ~A ~F~A"
 				      (gethash :|customer_name| appmnt)
-				      (gethash :|photoshoot_type| appmnt)
-				      (gethash :|photoshoot_package| appmnt)
+				      (str:capitalize (gethash :|photoshoot_type| appmnt))
+				      (str:capitalize (gethash :|photoshoot_package| appmnt))
 				      (gethash :|price| appmnt)
 				      (gethash :|currency| appmnt)))
 		     (description (format nil
