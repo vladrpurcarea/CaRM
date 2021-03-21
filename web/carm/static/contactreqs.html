@@ -20,7 +20,7 @@
 	<script>
 	 function getRequests() {
 	     var params = new URLSearchParams(window.location.search);
-	     var limit = params.has('limit') ? params.get('limit') : 10;
+	     var limit = params.has('limit') ? params.get('limit') : 40;
 	     var offset = params.has('offset') ? params.get('offset') : 0;
 	     var spam = params.has('spam') ? true : false;
 	     

@@ -20,7 +20,7 @@
 	<script>
 	 function getRequests() {
 	     var params = new URLSearchParams(window.location.search);
-	     var limit = params.has('limit') ? params.get('limit') : 10;
+	     var limit = params.has('limit') ? params.get('limit') : 50;
 	     var offset = params.has('offset') ? params.get('offset') : 0;
 	     
 	     var url = `/carm/api/v1/appointment?limit=${limit}&offset=${offset}`;
