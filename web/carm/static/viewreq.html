@@ -11,14 +11,17 @@
 	    <img src="/carm/static/img/logo.png" />
 	  </a>
 	</div>
-	<div id="requestcontainer" class="container">  
+	<div id="main-container"  class="container" >
+	    <div class="container-title">Contact Request</div>
+	    <div id="requestcontainer" class="container">  
+	    </div>
+	    <div id="seen-container" class="viewreq-container" >
+		<div id="seen-icon"></div>
+		<div id="seen-button" class="viewreq-button"></div>
+	    </div>
+	    <div id="to-appointment-container" class="viewreq-container">
+		<div id="to-appointment-button" class="viewreq-button" >To Appointment</div>
 	</div>
-	<div id="seen-container" class="viewreq-container" >
-	    <div id="seen-icon"></div>
-	    <div id="seen-button" class="viewreq-button"></div>
-	</div>
-	<div id="to-appointment-container" class="viewreq-container">
-	    <div id="to-appointment-button" class="viewreq-button" >To Appointment</div>
 	</div>
 	<script>
 	  function addField(reqsContainer, fieldName, fieldValue, flip) {
@@ -62,7 +65,7 @@
 		     addField(reqsContainer, reqFieldName, request.data[reqFieldName], flip);
 		     flip = !flip;
 		 }
-		 addField(reqsContainer, "Date", parseTimestamp(request.timestamp), flip);	 
+		 addField(reqsContainer, "Date", parseTimestamp(request.timestamp).toLocaleString(), flip);	 
 		 updateRequestSeen(request.seen, id);
 	     }
 	     

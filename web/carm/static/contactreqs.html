@@ -47,7 +47,7 @@
 	     div.appendChild(h1Email);
 
 		     var h2Timestamp = document.createElement('h2');
-		     h2Timestamp.innerText = parseTimestamp(x.timestamp).toString();
+		     h2Timestamp.innerText = parseTimestamp(x.timestamp).toLocaleString();
 		     div.appendChild(h2Timestamp);
 
 		     reqsContainer.appendChild(div);

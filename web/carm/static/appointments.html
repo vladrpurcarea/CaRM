@@ -40,7 +40,7 @@
 		     div.appendChild(h1CustomerName);
 
 		     var h2Timestamp = document.createElement('h2');
-		     h2Timestamp.innerText = parseTimestamp(x.startTime).toString();
+		     h2Timestamp.innerText = parseTimestamp(x.startTime).toLocaleString();
 		     div.appendChild(h2Timestamp);
 
 		     reqsContainer.appendChild(div);

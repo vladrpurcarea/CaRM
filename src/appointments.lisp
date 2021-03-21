@@ -72,12 +72,12 @@
 ;;; INTERNAL
 
 (defun get-appointment (id)
-  (car (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package FROM appointments WHERE id = ?;"
+  (car (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, created_at FROM appointments WHERE id = ?;"
 		 (list id))))
 
 (defun get-appointments (offset limit)
   (syslog :info "Getting appointment list with offset ~A limit ~A" offset limit)
-  (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package FROM appointments LIMIT ? OFFSET ?;"
+  (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, created_at FROM appointments ORDER BY created_at DESC LIMIT ? OFFSET ?;"
 	    (list limit offset)))
 
 (defun create-appointment (host customer-name telephone email email-text start-time end-time price currency photographer
