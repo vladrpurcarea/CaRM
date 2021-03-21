@@ -34,6 +34,10 @@
 				 ("description" . ,description)
 				 ("color" . ,color)))))))
 
+(defun gcalendar-delete-event (event-id &key (calendar-id *appointment-calendar-id*))
+  (auth-google-req (make-calendar-url "/calendars/" calendar-id "/events/" event-id)
+		   :method :DELETE))
+
 (defun universal-time->gcalendar (utime)
   (alist-hash-table
    `(("dateTime" . ,(universal-time->rfc3339 utime)))))

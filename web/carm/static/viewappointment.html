@@ -1,0 +1,78 @@
+<html>
+    <head>
+      <title>CaRM - Contact Requests</title>
+      	<link rel="stylesheet"  href="/carm/static/style.css" />
+	<link rel="stylesheet"  href="/carm/static/viewreqstyle.css" />
+	<script src="/carm/static/js/fe.js"> </script>
+    </head>
+    <script>
+     function cancelAppointment() {
+	 if (!confirm("Are you sure you want to cancel this appointment? This cannot be undone.")) {
+	     return;
+	 }
+	 var id = getParameters().id;
+	 var xhr = newXhrAuthReq("DELETE", `/carm/api/v1/appointment/${id}/cancel`);
+	 xhr.onload = function() { alert('Canceled.'); window.location.href='/carm/static/appointments.html'; }
+
+	 xhr.send(null);
+     }
+    </script>
+    <body>
+	<div class="logocontainer" >
+	  <a href="/carm/static/dashboard.html" >
+	    <img src="/carm/static/img/logo.png" />
+	  </a>
+	</div>
+	<div id="requestcontainer" class="container">  
+	</div>
+	<div id="cancel-container" class="viewreq-container">
+	    <div id="cancel-button" style="width: 90%;" class="viewreq-button" onclick="cancelAppointment();">Cancel</div>
+	</div>
+	<script>
+	  function addField(reqsContainer, fieldName, fieldValue, flip) {
+	      var div = document.createElement('div');
+	      div.className = flip ? "field" : "field field-odd";
+	      
+	      var nameDiv = document.createElement('div');
+	      nameDiv.className = "field-name";
+	      nameDiv.innerText = capitalizeFirstLetter(fieldName);
+	      div.appendChild(nameDiv);
+	      
+	      var valueDiv = document.createElement('div');
+	      valueDiv.className = "field-value";
+	      valueDiv.innerText = fieldValue;
+	      div.appendChild(valueDiv);		      
+	      
+	      reqsContainer.appendChild(div);
+	  }
+	 
+	 function getRequests() {
+	     var id = getParameters().id;
+	     var xhr = newXhrAuthReq("GET", "/carm/api/v1/appointment/"+id);
+	     
+	     xhr.onload = function () {
+		 var request = JSON.parse(this.responseText);
+		 var reqsContainer = document.getElementById("requestcontainer");
+		 var flip = true;
+		 console.log(request);
+		 request.startTime = parseTimestamp(request.startTime);
+		 request.endTime = parseTimestamp(request.endTime);
+		 request.emailText = request.emailText.substr(0, 400) + "...";
+		 request.photoshootType = capitalizeFirstLetter(request.photoshootType);
+		 request.photoshootPackage = capitalizeFirstLetter(request.photoshootPackage);
+		 delete request.id;
+		 for (var reqFieldName in request) {
+		     addField(reqsContainer, reqFieldName, request[reqFieldName], flip);
+		     flip = !flip;
+		 }
+		 addField(reqsContainer, "Date", request.createdAt, flip);	 
+	     }
+	     
+	     xhr.send(null);
+	 }
+	 
+	 getRequests();
+	     
+	</script>
+    </body>
+</html>

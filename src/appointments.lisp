@@ -55,7 +55,25 @@
       `(("appointments" . ,(mapcar #'plist-hash-table
 				   (get-appointments offset limit))))))))
 
+(defroute get-appointment-route
+    ("/carm/api/v1/appointment/:id"
+     :method :GET
+     :decorators (@auth @json-out))
+    ()
+  (to-json (get-appointment id)))
+
+(defroute delete-cancel-appointment-route
+    ("/carm/api/v1/appointment/:id/cancel"
+     :method :DELETE
+     :decorators (@log-errors @auth))
+    ()
+  (cancel-appointment id))
+
 ;;; INTERNAL
+
+(defun get-appointment (id)
+  (car (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package FROM appointments WHERE id = ?;"
+		 (list id))))
 
 (defun get-appointments (offset limit)
   (syslog :info "Getting appointment list with offset ~A limit ~A" offset limit)
@@ -69,6 +87,15 @@
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	   (list host customer-name telephone email email-text start-time end-time price currency photographer
 		 photoshoot-address photoshoot-type photoshoot-package)))
+
+(defun cancel-appointment (appt-id)
+  (let ((gcalendar-id (getf (car
+			     (db-fetch "SELECT gcalendar_id FROM appointments WHERE id = ?"
+				       (list appt-id)))
+			    :|gcalendar_id|)))
+    (when gcalendar-id
+      (gcalendar-delete-event gcalendar-id))
+    (db-exec "DELETE FROM appointments WHERE id = ?" (list appt-id))))
 
 (defun process-appointments ()
   (process-appointments-to-gcalendar)
