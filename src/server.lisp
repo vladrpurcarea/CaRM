@@ -4,6 +4,7 @@
 
 (setf hunchentoot:*hunchentoot-default-external-format*
 hunchentoot::+utf-8+)
+(setf drakma:*drakma-default-external-format* :utf8)
 
 (defun make-server (&optional (port 4200) (document-root #p"./"))
   (make-instance 'easy-routes:easy-routes-acceptor
