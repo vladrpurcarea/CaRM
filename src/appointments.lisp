@@ -4,7 +4,7 @@
 
 ;;; WEB
 
-(defroute post-appointment
+(defroute post-appointment-route
     ("/carm/api/v1/appointment"
      :method :POST
      :decorators (@log-errors @auth @json))
@@ -28,7 +28,7 @@
     (type-error (e) (http-400-bad-request (write e :escape nil)))))
 
 
-(defroute post-appointment-email-template
+(defroute post-appointment-email-template-route
     ("/carm/api/v1/appointment/template"
      :method :POST
      :decorators (@log-errors @auth @json))
@@ -38,13 +38,34 @@
       (concretize-email-from-appointment (@json-body))
     (error (e) (write e :escape nil))))
 
+(defroute get-appointments-route
+    ("/carm/api/v1/appointment"
+     :method :GET
+     :decorators (@auth @json-out))
+    (&get offset limit)
+  (let ((offset (if offset
+		    (parse-integer offset)
+		    0)); default
+	(limit (if limit
+		   (min (parse-integer limit)
+			100) ;max
+		   20))) ;default
+    (to-json
+     (alist-hash-table
+      `(("appointments" . ,(mapcar #'plist-hash-table
+				   (get-appointments offset limit))))))))
+
 ;;; INTERNAL
+
+(defun get-appointments (offset limit)
+  (syslog :info "Getting appointment list with offset ~A limit ~A" offset limit)
+  (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package FROM appointments LIMIT ? OFFSET ?;"
+	    (list limit offset)))
 
 (defun create-appointment (host customer-name telephone email email-text start-time end-time price currency photographer
 			   photoshoot-address photoshoot-type photoshoot-package)
   (syslog :info "Creating new appointment from ~A" host)
-  (db-exec "INSERT INTO appointments (host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,
-                                      photoshoot_address, photoshoot_type, photoshoot_package) 
+  (db-exec "INSERT INTO appointments (host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	   (list host customer-name telephone email email-text start-time end-time price currency photographer
 		 photoshoot-address photoshoot-type photoshoot-package)))

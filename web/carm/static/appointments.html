@@ -1,8 +1,8 @@
 <html>
     <head>
-      <title>CaRM - Contact Requests</title>
+      <title>CaRM - Contact Appointments</title>
       	<link rel="stylesheet"  href="/carm/static/style.css" />
-	<link rel="stylesheet"  href="/carm/static/contactreqstyle.css" />
+	<link rel="stylesheet"  href="/carm/static/appointmentsstyle.css" />
 	<script src="/carm/static/js/fe.js"> </script>
     </head>
     <body>
@@ -12,7 +12,7 @@
 	  </a>
 	</div>
 	<div id="main-container"  class="container" >
-	    <div class="container-title">Contact Requests</div>
+	    <div class="container-title">Appointments</div>
 	    <div id="reqscontainer" class="container">
 		<!-- getRequests()  -->
 	    </div>
@@ -22,32 +22,25 @@
 	     var params = new URLSearchParams(window.location.search);
 	     var limit = params.has('limit') ? params.get('limit') : 10;
 	     var offset = params.has('offset') ? params.get('offset') : 0;
-	     var spam = params.has('spam') ? true : false;
 	     
-	     var url = `/carm/api/v1/contact-request?limit=${limit}&offset=${offset}`;
-	     if (spam) {
-		 url += "&spam";
-		 titleDiv = document.getElementsByClassName('container-title')[0];
-		 titleDiv.innerText = "Spam Contact Requests";
-	     }
+	     var url = `/carm/api/v1/appointment?limit=${limit}&offset=${offset}`;
 	     var xhr = newXhrAuthReq("GET", url);
-	     
 	     xhr.onload = function () {
-		 var reqs = JSON.parse(this.responseText).contactRequests;
+		 var reqs = JSON.parse(this.responseText).appointments;
 		 var reqsContainer = document.getElementById("reqscontainer");
 		 reqs.forEach(function (x) {
 		     var div = document.createElement('div');
-		     div.className = x.seen ? "contact-request contact-request-seen" : "contact-request";
+		     div.className = "default-item";
 		     div.onclick = function() {
 			 window.location.href = "/carm/static/viewreq.html?id=" + x.id;
 		     }
 
-		     var h1Email = document.createElement('h1');
-		     h1Email.innerText = x.data["email"];
-	     div.appendChild(h1Email);
+		     var h1CustomerName = document.createElement('h1');
+		     h1CustomerName.innerText = x["customerName"];
+		     div.appendChild(h1CustomerName);
 
 		     var h2Timestamp = document.createElement('h2');
-		     h2Timestamp.innerText = parseTimestamp(x.timestamp).toString();
+		     h2Timestamp.innerText = parseTimestamp(x.startTime).toString();
 		     div.appendChild(h2Timestamp);
 
 		     reqsContainer.appendChild(div);

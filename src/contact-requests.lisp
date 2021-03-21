@@ -37,16 +37,18 @@
     ("/carm/api/v1/contact-request"
      :method :GET
      :decorators (@log-errors @auth @json-out))
-    (&get offset limit)
-  (labels ((parse (val default)
-	     (if val
-		 (parse-integer val)
-		 default)))
+    (&get offset limit spam)
+  (let ((offset (if offset
+		    (parse-integer offset)
+		    0)); default
+	(limit (if limit
+		   (min (parse-integer limit)
+			100) ;max
+		   20))) ;default
     (to-json
      (alist-hash-table
       `(("contactRequests"
-	 . ,(get-contact-requests (parse offset 0)
-				  (parse limit 100))))))))
+	 . ,(get-contact-requests offset limit spam)))))))
 
 (defroute get-contact-request-route
     ("/carm/api/v1/contact-request/:id"
@@ -85,17 +87,14 @@
   (db-exec "INSERT INTO contact_requests (data, seen, spam, host, timestamp) VALUES (?, 0, ?, ?, ?);"
 	   (list data spam host (get-universal-time))))
 
-(defun get-contact-requests (offset limit)
+(defun get-contact-requests (offset limit spam)
   (when (and (typep offset 'integer)
 	     (typep limit 'integer))
     (mapcar
      #'parse-contact-request
-     (db-fetch
-      (format
-       nil
-       "SELECT id, data, seen, timestamp FROM contact_requests WHERE spam = 0
-        ORDER BY timestamp DESC LIMIT ~A,~A;"
-       offset limit)))))
+     (db-fetch "SELECT id, data, seen, timestamp FROM contact_requests WHERE spam = ?
+                ORDER BY timestamp DESC LIMIT ?,?;"
+	       (list (if spam 1 0) offset limit)))))
 
 (defun parse-contact-request (x)
   (let ((x (plist-hash-table (encode-keys-to-strings x)

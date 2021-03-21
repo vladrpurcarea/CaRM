@@ -31,6 +31,13 @@ body {
     display: flex;
     flex-direction: column;
     margin: auto;
+    justify-content: center;
+}
+
+.container-title {
+    font-size: 1.8em;
+    margin: 0 auto 1.5%;
+    font-weight: bold;
 }
 
 .defaultbutton {
@@ -42,4 +49,28 @@ body {
     border-radius: 6px;
     display: inline-block;
     transition: all 0.2s ease 0s;
+}
+
+.default-item {
+    border: 0.1em solid #d9d9d9 !important;
+    color: #434343;
+    box-shadow: 0px 0px 12px -9px #000000;
+    padding-left: 1em;
+    margin: 0.3em 0;
+    transition: all 0.2s ease 0s;
+}
+
+.default-item:hover {
+    background-color: #212121;
+    cursor: pointer;
+    transition: all 0.2s ease 0s;
+    color: #f3f3f3;
+}
+
+.default-item h1 {
+    font-size: 1.2em;
+}
+
+.default-item h2 {
+    font-size: 0.8em;
 }
