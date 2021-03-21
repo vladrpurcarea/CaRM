@@ -160,7 +160,9 @@
   (when *contact-request-notification-email*
     (syslog :info "Processing contact requests to email")
     (let* ((unprocessed-reqs
-	    (db-fetch "SELECT id, data, host, timestamp FROM contact_requests WHERE processed_email = 0 AND spam = 0")))
+	    (db-fetch "SELECT id, data, host, timestamp FROM contact_requests 
+                       WHERE processed_email = 0 
+                       AND spam = 0")))
       (when unprocessed-reqs
 	(syslog :info "~D contact request(s) to send mail for." (length unprocessed-reqs))
 	(loop for req in unprocessed-reqs

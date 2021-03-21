@@ -81,30 +81,34 @@
 	    (db-fetch "SELECT id, host, customer_name, telephone, email, start_time, end_time, price, currency, 
                        photographer, photoshoot_type, photoshoot_package FROM appointments WHERE processed_calendar = 0")))
       (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
-	    do (let ((summary (format nil "~A ~A ~A ~F~A"
-				      (gethash :|customer_name| appmnt)
-				      (str:capitalize (gethash :|photoshoot_type| appmnt))
-				      (str:capitalize (gethash :|photoshoot_package| appmnt))
-				      (gethash :|price| appmnt)
-				      (gethash :|currency| appmnt)))
-		     (description (format nil
-					  "Site: ~A~%Telephone: ~A~%Email: ~A~%Package: ~A ~A~%Photographer: ~A"
-					  (gethash :|host| appmnt)
-					  (gethash :|telephone| appmnt)
-					  (gethash :|email| appmnt)
-					  (gethash :|photoshoot_type| appmnt)
-					  (gethash :|photoshoot_package| appmnt)
-					  (gethash :|photographer| appmnt))))
-		 (gcalendar-insert-event (gethash :|start_time| appmnt)
-					 (gethash :|end_time| appmnt)
-					 summary
-					 :description description) ;; TODO: event :color
-		 (db-exec "UPDATE appointments SET processed_calendar = 1 WHERE id = ?"
-			  (list (gethash :|id| appmnt)))))))) 
+	    do (let* ((summary (format nil "~A ~A ~A ~F~A"
+				       (gethash :|customer_name| appmnt)
+				       (str:capitalize (gethash :|photoshoot_type| appmnt))
+				       (str:capitalize (gethash :|photoshoot_package| appmnt))
+				       (gethash :|price| appmnt)
+				       (gethash :|currency| appmnt)))
+		      (description (format nil
+					   "Site: ~A~%Telephone: ~A~%Email: ~A~%Package: ~A ~A~%Photographer: ~A"
+					   (gethash :|host| appmnt)
+					   (gethash :|telephone| appmnt)
+					   (gethash :|email| appmnt)
+					   (gethash :|photoshoot_type| appmnt)
+					   (gethash :|photoshoot_package| appmnt)
+					   (gethash :|photographer| appmnt)))
+		      (insert-event-result (gcalendar-insert-event
+					    (gethash :|start_time| appmnt)
+					    (gethash :|end_time| appmnt)
+					    summary
+					    :description description))
+		      (event-id (gethash "id" insert-event-result))) ;; TODO: event :color
+		 (db-exec "UPDATE appointments SET processed_calendar = 1, gcalendar_id = ? WHERE id = ?"
+			  (list event-id  (gethash :|id| appmnt)))))))) 
 
 (defun process-appointments-to-email ()
   (syslog :info "Processing appointments to email.")
-  (let ((unproc-appointments (db-fetch "SELECT id, email, email_text FROM appointments WHERE processed_email = 0")))
+  (let ((unproc-appointments (db-fetch "SELECT id, email, email_text FROM appointments 
+                                        WHERE processed_email = 0
+                                        AND created_at < datetime(CURRENT_TIMESTAMP, '-30 minutes')")))
     (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
 	  do (progn
 	       (send-mail (gethash :|email| appmnt)

@@ -53,7 +53,10 @@
      photoshoot_package TEXT NOT NULL,
      processed_calendar INTEGER NOT NULL DEFAULT 0,
      processed_email INTEGER NOT NULL DEFAULT 0,
-     email_text TEXT
+     processed_email_reminder INTEGER NOT NULL DEFAULT 0,
+     gcalendar_id INTEGER,
+     email_text TEXT,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );")
 
 (defvar *master-table-init-query*
