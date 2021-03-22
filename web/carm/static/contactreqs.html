@@ -33,7 +33,7 @@
 	     var xhr = newXhrAuthReq("GET", url);
 	     
 	     xhr.onload = authFn(xhr, function () {
-		 var reqs = JSON.parse(this.responseText).contactRequests;
+		 var reqs = JSON.parse(xhr.responseText).contactRequests;
 		 var reqsContainer = document.getElementById("reqscontainer");
 		 reqs.forEach(function (x) {
 		     var div = document.createElement('div');

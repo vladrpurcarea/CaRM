@@ -187,7 +187,7 @@
 		     return;
 		 }
 		 var emailText = document.getElementById('email-text-input');
-		 var response = this.responseText.replace(/\r?\n/g, "\r\n")
+		 var response = xhr.responseText.replace(/\r?\n/g, "\r\n")
 		 emailText.value = response
 	     })
 

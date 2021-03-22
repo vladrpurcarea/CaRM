@@ -54,7 +54,7 @@
 	     var xhr = newXhrAuthReq("GET", "/carm/api/v1/appointment/"+id);
 	     
 	     xhr.onload = function () {
-		 var request = JSON.parse(this.responseText);
+		 var request = JSON.parse(xhr.responseText);
 		 var reqsContainer = document.getElementById("requestcontainer");
 		 var flip = true;
 		 console.log(request);

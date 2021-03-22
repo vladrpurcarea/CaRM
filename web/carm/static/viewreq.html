@@ -57,7 +57,7 @@
 	     var xhr = newXhrAuthReq("GET", "/carm/api/v1/contact-request/"+id);
 	     
 	     xhr.onload = authFn(xhr, function () {
-		 var request = JSON.parse(this.responseText);
+		 var request = JSON.parse(xhr.responseText);
 		 var reqsContainer = document.getElementById("requestcontainer");
 		 var flip = true;
 		 console.log(request);
@@ -77,7 +77,7 @@
 	     var id = getParameters().id;
 	     var xhr = newXhrAuthReq("GET", "/carm/api/v1/contact-request/" + id);
 	     xhr.onload = authFn(xhr, function () {
-		 var request = JSON.parse(this.responseText).data;
+		 var request = JSON.parse(xhr.responseText).data;
 		 var url = "/carm/static/createappointment.html?customerName=" + request.name + "&telephone=" + request.phone + "&email=" + request.email + "&host=" +request.host;
 		 window.location.href = url;
 	     })

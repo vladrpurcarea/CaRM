@@ -18,7 +18,7 @@
 		      but.style.backgroundColor = "#e08080"
 		      return;
 		  }
-		  var sessionId = JSON.parse(this.responseText).sessionId;
+		  var sessionId = JSON.parse(xhr.responseText).sessionId;
 		  document.cookie = "sessionId="+sessionId+"; max-age=172800; path=/carm/;SameSite=Strict";
 		  window.location.href="/carm/static/dashboard.html";
 	      }
