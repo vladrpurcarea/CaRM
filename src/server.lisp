@@ -58,7 +58,7 @@ hunchentoot::+utf-8+)
 
 (defun get-basic-auth-header ()
   (let ((header (hunchentoot:header-in* :authorization)))
-    (when header
+    (when (str:starts-with? "Basic: " header)
       (subseq header 6))))
 
 (defmacro @userid () `(hunchentoot:session-value 'auth-userid))

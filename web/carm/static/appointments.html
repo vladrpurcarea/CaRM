@@ -25,7 +25,7 @@
 	     
 	     var url = `/carm/api/v1/appointment?limit=${limit}&offset=${offset}`;
 	     var xhr = newXhrAuthReq("GET", url);
-	     xhr.onload = function () {
+	     xhr.onload = authFn(xhr, function() {
 		 var reqs = JSON.parse(this.responseText).appointments;
 		 var reqsContainer = document.getElementById("reqscontainer");
 		 reqs.forEach(function (x) {
@@ -45,7 +45,7 @@
 
 		     reqsContainer.appendChild(div);
 		 });
-	     }
+	     });
 	     
 	     xhr.send(null);
 	 }

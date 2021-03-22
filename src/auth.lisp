@@ -75,7 +75,7 @@
   (let* ((cur-time (get-universal-time))
 	 (expiration-time (+ cur-time
 			     (* 60 60 24 2)))
-	(sessionid (qbase64:encode-bytes (secure-random:bytes 32 secure-random:*generator*))))
+	 (sessionid (qbase64:encode-bytes (secure-random:bytes 32 secure-random:*generator*))))
     (db-exec "INSERT INTO sessions (userid, sessionid, created_at, expires_at, enabled)
               VALUES (?, ?, ?, ?, ?);"
 	     (list userid

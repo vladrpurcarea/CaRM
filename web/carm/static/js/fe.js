@@ -6,6 +6,15 @@ function newXhrAuthReq(method, url) {
     return xhr;
 }
 
+function authFn(xhr, f) {
+    return function() {
+	if (xhr.status == 403) {
+	    window.location.href = '/carm/static/login.html';
+	}
+	f();
+    }
+}
+
 function getCookieValue(a) {
     var b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
     return b ? b.pop() : '';

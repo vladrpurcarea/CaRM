@@ -181,7 +181,7 @@
 	 function generateEmail() {
 	     var xhr = new XMLHttpRequest();
 	     var xhr = newXhrAuthReq("POST", "/carm/api/v1/appointment/template");
-	     xhr.onload = function () {
+	     xhr.onload = authFn(xhr, function () {
 		 if (this.status !== 200) {
 		     console.log("Error, status " + this.status);
 		     return;
@@ -189,10 +189,7 @@
 		 var emailText = document.getElementById('email-text-input');
 		 var response = this.responseText.replace(/\r?\n/g, "\r\n")
 		 emailText.value = response
-	     }
-	     xhr.onerror = function() {
-		 console.log("XHR Error");
-	     }
+	     })
 
 	     var appointment = readAppointment();
 	     var photoshootInfo = getPhotoshootInfo(appointment["host"], appointment["photoshootType"], appointment["photoshootPackage"]);
@@ -206,16 +203,14 @@
 	     
 	     var xhr = new XMLHttpRequest();
 	     var xhr = newXhrAuthReq("POST", "/carm/api/v1/appointment");
-	     xhr.onload = function () {
+	     xhr.onload = authFn(xhr, function () {
 		 if (this.status !== 204) {
 		     console.log("Error, status " + this.status);
 		     return;
 		 }
 		 alert('Saved')
-	     }
-	     xhr.onerror = function() {
-		 console.log("XHR Error");
-	     }
+	     })
+
 	     xhr.send(JSON.stringify(appointment));
 	 }
 
