@@ -139,8 +139,24 @@
     (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
 	  do (progn
 	       (send-mail (gethash :|email| appmnt)
-			  "Booking"
+			  "Booking Confirmation"
 			  (gethash :|email_text| appmnt)
 			  :signature (get-email-signature))
 	       (db-exec "UPDATE appointments SET processed_email = 1 WHERE id = ?"
+			(list (gethash :|id| appmnt)))))))
+
+(defun process-appointment-reminders-to-email ()
+  (syslog :info "Processing appointment reminders to email.")
+  (let ((unproc-appointments (db-fetch "SELECT id, email, email_text FROM appointments 
+                                        WHERE processed_email = 1 AND processed_email_reminder = 0
+                                        AND created_at < datetime(CURRENT_TIMESTAMP, '-5 days')
+                                        AND start_time - ? < 129600"  ; 1.5 days
+				        (list (get-universal-time)))))
+    (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
+	  do (progn
+	       (send-mail (gethash :|email| appmnt)
+			  "Booking Confirmation Reminder"
+			  (gethash :|email_text| appmnt)
+			  :signature (get-email-signature))
+	       (db-exec "UPDATE appointments SET processed_email_reminder = 1 WHERE id = ?"
 			(list (gethash :|id| appmnt)))))))
