@@ -124,7 +124,8 @@
 					   (gethash :|photographer| appmnt)))
 		      (insert-event-result (gcalendar-insert-event
 					    (gethash :|start_time| appmnt)
-					    (gethash :|end_time| appmnt)
+					    (+ (gethash :|end_time| appmnt)
+					       1800) ; +30 minutes during corona time, only in gcalendar
 					    summary
 					    :description description))
 		      (event-id (gethash "id" insert-event-result))) ;; TODO: event :color
