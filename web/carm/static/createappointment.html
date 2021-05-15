@@ -74,15 +74,15 @@
 		     if (pPackage === "joy") {
 			 res.duration = 30 * 60;
 			 res.price = 275;
-			 res.digitalPhotosNum = 5;
+			 res.digitalPhotosNum = 10;
 		     } else if (pPackage === "happy") {
 			 res.duration = 45 * 60;
 			 res.price = 350;
-			 res.digitalPhotosNum = 10;
+			 res.digitalPhotosNum = 15;
 		     } else if (pPackage === "love") {
 			 res.duration = 60 * 60;
 			 res.price = 390;
-			 res.digitalPhotosNum = 15;
+			 res.digitalPhotosNum = 20;
 		     }
 		 }
 	     } else if (pHost === "donna-bellini-fotografie-muenchen.de") {
@@ -132,15 +132,15 @@
 		     if (pPackage === "joy") {
 			 res.duration = 30 * 60;
 			 res.price = 199;
-		 	 res.digitalPhotosNum = 5;
+		 	 res.digitalPhotosNum = 10;
 		     } else if (pPackage === "happy") {
 			 res.duration = 45 * 60;
 			 res.price = 250;
-			 res.digitalPhotosNum = 10;
+			 res.digitalPhotosNum = 15;
 		     } else if (pPackage === "love") {
 			 res.duration = 60 * 60;
 			 res.price = 320;
-			 res.digitalPhotosNum = 15;
+			 res.digitalPhotosNum = 20;
 		     }
 		 }
 	     }  else if (pHost === "donna-bellini-fotografie-berlin.de") {
@@ -182,8 +182,8 @@
 	     var xhr = new XMLHttpRequest();
 	     var xhr = newXhrAuthReq("POST", "/carm/api/v1/appointment/template");
 	     xhr.onload = authFn(xhr, function () {
-		 if (this.status !== 200) {
-		     console.log("Error, status " + this.status);
+		 if (xhr.status !== 200) {
+		     console.log("Error, status " + xhr.status);
 		     return;
 		 }
 		 var emailText = document.getElementById('email-text-input');
@@ -204,8 +204,8 @@
 	     var xhr = new XMLHttpRequest();
 	     var xhr = newXhrAuthReq("POST", "/carm/api/v1/appointment");
 	     xhr.onload = authFn(xhr, function () {
-		 if (this.status !== 204) {
-		     console.log("Error, status " + this.status);
+		 if (xhr.status !== 204) {
+		     console.log("Error, status " + xhr.status);
 		     return;
 		 }
 		 alert('Saved')

@@ -56,6 +56,7 @@
      processed_email_reminder INTEGER NOT NULL DEFAULT 0,
      gcalendar_id INTEGER,
      email_text TEXT,
+     confirmed INTEGER NOT NULL DEFAULT 0,
      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );")
 

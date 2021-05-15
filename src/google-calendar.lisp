@@ -22,7 +22,7 @@
 (defun gcalendar-insert-event (start end summary &key
 						   (calendar-id *appointment-calendar-id*)
 						   (description "")
-						   (color nil))
+						   (color-id nil))
   (from-json
    (auth-google-req (make-calendar-url "/calendars/" calendar-id "/events")
 		    :method :POST
@@ -32,11 +32,14 @@
 				 ("end" . ,(universal-time->gcalendar end))
 				 ("summary" . ,summary)
 				 ("description" . ,description)
-				 ("color" . ,color)))))))
+				 ("colorId" . ,color-id)))))))
 
 (defun gcalendar-delete-event (event-id &key (calendar-id *appointment-calendar-id*))
   (auth-google-req (make-calendar-url "/calendars/" calendar-id "/events/" event-id)
 		   :method :DELETE))
+
+(defun gcalendar-get-colors ()
+  (from-json (auth-google-req (make-calendar-url "/colors"))))
 
 (defun universal-time->gcalendar (utime)
   (alist-hash-table

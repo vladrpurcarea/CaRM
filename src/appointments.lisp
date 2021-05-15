@@ -23,7 +23,8 @@
 			    (assert-type (gethash "photographer" (@json-body)) 'string)
 			    (assert-type (gethash "photoshootAddress" (@json-body)) 'string)
 			    (assert-type (gethash "photoshootType" (@json-body)) 'string)
-			    (assert-type (gethash "photoshootPackage" (@json-body)) 'string))
+			    (assert-type (gethash "photoshootPackage" (@json-body)) 'string)
+			    :confirmed (if (gethash "confirmed" (@json-body)) 1 0))
 	(http-204-no-content))
     (type-error (e) (http-400-bad-request (write e :escape nil)))))
 
@@ -80,13 +81,26 @@
   (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, created_at FROM appointments ORDER BY created_at DESC LIMIT ? OFFSET ?;"
 	    (list limit offset)))
 
-(defun create-appointment (host customer-name telephone email email-text start-time end-time price currency photographer
-			   photoshoot-address photoshoot-type photoshoot-package)
+(defun create-appointment (host
+			   customer-name
+			   telephone
+			   email
+			   email-text
+			   start-time
+			   end-time
+			   price
+			   currency
+			   photographer
+			   photoshoot-address
+			   photoshoot-type
+			   photoshoot-package
+			   &key
+			     (confirmed nil))
   (syslog :info "Creating new appointment from ~A" host)
-  (db-exec "INSERT INTO appointments (host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+  (db-exec "INSERT INTO appointments (host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	   (list host customer-name telephone email email-text start-time end-time price currency photographer
-		 photoshoot-address photoshoot-type photoshoot-package)))
+		 photoshoot-address photoshoot-type photoshoot-package confirmed)))
 
 (defun cancel-appointment (appt-id)
   (let ((gcalendar-id (getf (car
@@ -106,9 +120,10 @@
     (syslog :info "Processing unprocessed appointments to Google Calendar.")
     (let ((unproc-appointments
 	    (db-fetch "SELECT id, host, customer_name, telephone, email, start_time, end_time, price, currency, 
-                       photographer, photoshoot_type, photoshoot_package FROM appointments WHERE processed_calendar = 0")))
+                       photographer, photoshoot_type, photoshoot_package, confirmed FROM appointments WHERE processed_calendar = 0")))
       (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
-	    do (let* ((summary (format nil "~A ~A ~A ~F~A"
+	    do (let* ((summary (format nil "~A~A ~A ~A ~F~A"
+				       (if (gethash :|confirmed| appmnt) "(?) " "")
 				       (gethash :|customer_name| appmnt)
 				       (str:capitalize (gethash :|photoshoot_type| appmnt))
 				       (str:capitalize (gethash :|photoshoot_package| appmnt))
@@ -127,15 +142,25 @@
 					    (+ (gethash :|end_time| appmnt)
 					       1800) ; +30 minutes during corona time, only in gcalendar
 					    summary
-					    :description description))
+					    :description description
+					    :color-id (get-appointment-color (gethash :|photographer| appmnt)
+									  (gethash :|confirmed| appmnt))))
 		      (event-id (gethash "id" insert-event-result))) ;; TODO: event :color
 		 (db-exec "UPDATE appointments SET processed_calendar = 1, gcalendar_id = ? WHERE id = ?"
 			  (list event-id  (gethash :|id| appmnt)))))))) 
+
+(defun get-appointment-color (photographer confirmed)
+  (cond
+    ((= confirmed 0) 8) ; grey
+    ((string-equal photographer "Carmen Bergmann") 6) ; red
+    (t 5) ; yellow
+    ))
 
 (defun process-appointments-to-email ()
   (syslog :info "Processing appointments to email.")
   (let ((unproc-appointments (db-fetch "SELECT id, email, email_text FROM appointments 
                                         WHERE processed_email = 0
+                                        AND confirmed = 1
                                         AND created_at < datetime(CURRENT_TIMESTAMP, '-30 minutes')")))
     (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
 	  do (progn
@@ -149,7 +174,9 @@
 (defun process-appointment-reminders-to-email ()
   (syslog :info "Processing appointment reminders to email.")
   (let ((unproc-appointments (db-fetch "SELECT id, email, email_text FROM appointments 
-                                        WHERE processed_email = 1 AND processed_email_reminder = 0
+                                        WHERE processed_email = 1 
+                                        AND processed_email_reminder = 0
+                                        AND confirmed = 1
                                         AND created_at < datetime(CURRENT_TIMESTAMP, '-5 days')
                                         AND start_time - ? < 115200"  ; 1 day and 8 hours
 				        (list (get-universal-time)))))
