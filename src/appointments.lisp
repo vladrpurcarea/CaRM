@@ -41,7 +41,7 @@
 (defroute get-appointments-route
     ("/carm/api/v1/appointment"
      :method :GET
-     :decorators (@auth @json-out))
+     :decorators (@log-errors @auth @json-out))
     (&get offset limit)
   (let ((offset (if offset
 		    (parse-integer offset)
@@ -58,7 +58,7 @@
 (defroute get-appointment-route
     ("/carm/api/v1/appointment/:id"
      :method :GET
-     :decorators (@auth @json-out))
+     :decorators (@log-errors @auth @json-out))
     ()
   (to-json (get-appointment id)))
 

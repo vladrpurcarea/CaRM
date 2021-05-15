@@ -24,7 +24,8 @@
 	       #:daemon
 	       #:swank
 	       #:cl-syslog
-	       #:local-time)
+	       #:local-time
+	       #:trivial-backtrace)
   :components ((:file "package")
 	       (:file "src/log")
 	       (:file "src/util")

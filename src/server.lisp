@@ -70,7 +70,11 @@ hunchentoot::+utf-8+)
 
 (defun @log-errors (next)
   (handler-case (funcall next)
-    (error (e) (syslog :err "Lisp Error: ~A" e))))
+    (error (e)
+      (progn
+	(syslog :err
+		(trivial-backtrace:print-backtrace e :output nil))
+	(error e)))))
 (defmacro log-errors (&body body)
   `(@log-errors (lambda () ,@body)))
 
