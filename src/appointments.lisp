@@ -24,6 +24,7 @@
 			    (assert-type (gethash "photoshootAddress" (@json-body)) 'string)
 			    (assert-type (gethash "photoshootType" (@json-body)) 'string)
 			    (assert-type (gethash "photoshootPackage" (@json-body)) 'string)
+			    (assert-type (gethash "gcalendarNotes" (@json-body)) 'string)
 			    :confirmed (if (gethash "confirmed" (@json-body)) 1 0))
 	(http-204-no-content))
     (type-error (e) (http-400-bad-request (write e :escape nil)))))
@@ -49,6 +50,7 @@
 			    (assert-type (gethash "photoshootAddress" (@json-body)) 'string)
 			    (assert-type (gethash "photoshootType" (@json-body)) 'string)
 			    (assert-type (gethash "photoshootPackage" (@json-body)) 'string)
+			    (assert-type (gethash "gcalendarNotes" (@json-body)) 'string)
 			    :confirmed (if (gethash "confirmed" (@json-body)) 1 0))
 	(http-204-no-content))
     (type-error (e) (http-400-bad-request (write e :escape nil)))))
@@ -116,12 +118,12 @@
 ;;; INTERNAL
 
 (defun get-appointment (id)
-  (car (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, processed_email, processed_email_reminder, created_at FROM appointments WHERE id = ?;"
+  (car (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, processed_email, processed_email_reminder, gcalendar_notes, created_at FROM appointments WHERE id = ?;"
 		 (list id))))
 
 (defun get-appointments (offset limit)
   (syslog :info "Getting appointment list with offset ~A limit ~A" offset limit)
-  (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, created_at, processed_email, processed_email_reminder FROM appointments ORDER BY created_at DESC LIMIT ? OFFSET ?;"
+  (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, created_at, processed_email, processed_email_reminder, gcalendar_notes FROM appointments ORDER BY created_at DESC LIMIT ? OFFSET ?;"
 	    (list limit offset)))
 
 (defun create-appointment (host
@@ -137,13 +139,14 @@
 			   photoshoot-address
 			   photoshoot-type
 			   photoshoot-package
+			   gcalendar-notes
 			   &key
 			     (confirmed nil))
   (syslog :info "Creating new appointment from ~A" host)
-  (db-exec "INSERT INTO appointments (host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+  (db-exec "INSERT INTO appointments (host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, gcalendar_notes) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	   (list host customer-name telephone email email-text start-time end-time price currency photographer
-		 photoshoot-address photoshoot-type photoshoot-package confirmed)))
+		 photoshoot-address photoshoot-type photoshoot-package confirmed gcalendar-notes)))
 
 (defun update-appointment (id
 			   host
@@ -159,13 +162,14 @@
 			   photoshoot-address
 			   photoshoot-type
 			   photoshoot-package
+			   gcalendar-notes
 			   &key
 			     (confirmed nil))
   (syslog :info "Updating appointment ~A" id)
   (reset-gcalendar id)
-  (db-exec "UPDATE appointments SET host=?, customer_name=?, telephone=?, email=?, email_text=?, start_time=?, end_time=?, price=?, currency=?, photographer=?,photoshoot_address=?, photoshoot_type=?, photoshoot_package=?, confirmed=?, processed_calendar=0 WHERE id=?"
+  (db-exec "UPDATE appointments SET host=?, customer_name=?, telephone=?, email=?, email_text=?, start_time=?, end_time=?, price=?, currency=?, photographer=?,photoshoot_address=?, photoshoot_type=?, photoshoot_package=?, confirmed=?, gcalendar_notes=?, processed_calendar=0 WHERE id=?"
 	   (list host customer-name telephone email email-text start-time end-time price currency photographer
-		 photoshoot-address photoshoot-type photoshoot-package confirmed id)))
+		 photoshoot-address photoshoot-type photoshoot-package confirmed gcalendar-notes id)))
 
 
 (defun reset-gcalendar (id)
@@ -194,7 +198,7 @@
     (syslog :info "Processing unprocessed appointments to Google Calendar.")
     (let ((unproc-appointments
 	    (db-fetch "SELECT id, host, customer_name, telephone, email, start_time, end_time, price, currency, 
-                       photographer, photoshoot_type, photoshoot_package, confirmed FROM appointments WHERE processed_calendar = 0")))
+                       photographer, photoshoot_type, photoshoot_package, confirmed, gcalendar_notes FROM appointments WHERE processed_calendar = 0")))
       (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
 	    do (let* ((summary (format nil "~A~A ~A ~A ~F~A"
 				       (if (= (gethash :|confirmed| appmnt) 0) "(?) " "")
@@ -204,14 +208,15 @@
 				       (gethash :|price| appmnt)
 				       (gethash :|currency| appmnt)))
 		      (description (format nil
-					   "Site: ~A~%Telephone: ~A~%Email: ~A~%Package: ~A ~A~%Photographer: ~A~%Link: ~A"
+					   "Site: ~A~%Telephone: ~A~%Email: ~A~%Package: ~A ~A~%Photographer: ~A~%Link: ~A~%Notes: ~A"
 					   (gethash :|host| appmnt)
 					   (gethash :|telephone| appmnt)
 					   (gethash :|email| appmnt)
 					   (gethash :|photoshoot_type| appmnt)
 					   (gethash :|photoshoot_package| appmnt)
 					   (gethash :|photographer| appmnt)
-					   (format nil "https://bergmann-fotografin-muenchen.de/carm/static/viewappointment.html?id=~D" (gethash :|id| appmnt))))
+					   (format nil "https://bergmann-fotografin-muenchen.de/carm/static/viewappointment.html?id=~D" (gethash :|id| appmnt))
+					   (gethash :|gcalendar_notes| appmnt)))
 		      (insert-event-result (gcalendar-insert-event
 					    (gethash :|start_time| appmnt)
 					    (+ (gethash :|end_time| appmnt)

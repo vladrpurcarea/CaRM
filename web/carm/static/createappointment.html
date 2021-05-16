@@ -22,7 +22,8 @@
 	     var address = document.getElementById('address-input').value
 	     var photoshootType = document.getElementById('photoshoot-type-input').value
 	     var photoshootPackage = document.getElementById('photoshoot-package-input').value
-	     var confirmed = document.getElementById('confirmed-input').checked 
+	     var confirmed = document.getElementById('confirmed-input').checked
+	     var gcalendarNotes = document.getElementById('gcalendar-notes-input').value
 
 	     return {
 		 host,
@@ -37,7 +38,8 @@
 		 photoshootAddress: address,
 		 photoshootType,
 		 photoshootPackage,
-		 confirmed
+		 confirmed,
+		 gcalendarNotes
 	     }
 	 }
 
@@ -326,6 +328,7 @@
 		 var photoshootPackage = document.getElementById('photoshoot-package-input')
 		 var confirmed = document.getElementById('confirmed-input')
 		 var emailText = document.getElementById('email-text-input');
+		 var gcalendarNotes = document.getElementById('gcalendar-notes-input');
 
 		 host.value = apmnt.host
 		 customerName.value = apmnt.customerName
@@ -339,7 +342,8 @@
 		 photoshootPackage.value = apmnt.photoshootPackage
 		 confirmed.checked = (apmnt.confirmed !== 0)
 		 emailText.value = apmnt.emailText
-
+		 gcalendarNotes.value = apmnt.gcalendarNotes
+		 
 		 var d = parseTimestamp(apmnt.startTime)
 		 startDateComponent.value = d.getFullYear().toString() + '-' + (d.getMonth()+1).toString().padStart(2, '0') + '-' + d.getDate().toString().padStart(2, '0');
 		 startTimeComponent.value = d.getHours() + ':' + d.getMinutes()
@@ -480,6 +484,12 @@
 			</th>
 			<th style="font-weight: normal; font-size: 12px;">
 			    <input type="checkbox" onclick="swapCustomField('address-input')"> custom
+			</th>
+		    </tr>
+		    <tr>
+			<th>GCalendar Notes</th>
+			<th>
+			    <textarea id="gcalendar-notes-input" name="gcalendar-notes-input" ></textarea>
 			</th>
 		    </tr>
 		    <tr>

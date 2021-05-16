@@ -57,6 +57,7 @@
      gcalendar_id INTEGER,
      email_text TEXT,
      confirmed INTEGER NOT NULL DEFAULT 0,
+     gcalendar_notes TEXT,
      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );")
 
