@@ -360,6 +360,16 @@
 	     }
 	     return false;
 	 }
+
+	 function confirmButton() {
+	     var confirmed = document.getElementById("confirmed-input").checked
+	     var button = document.getElementById("save-appointment-button")
+	     if (editId) {
+		 button.value = "Update Appointment"
+		 return
+	     }
+	     button.value = !confirmed ? "Save Appointment" : "Save Appointment & Send Email"
+	 }
 	 
 	</script>
 
@@ -497,7 +507,7 @@
 		    <tr>
 			<th>Confirmed</th>
 			<th>
-			    <input type="checkbox" id="confirmed-input" name="confirmed-input" >
+			    <input type="checkbox" id="confirmed-input" name="confirmed-input" onclick="confirmButton()">
 			</th>
 		    </tr>
 		    
@@ -517,6 +527,7 @@
 	 var editId = getEditId();
 	 if (editId) {
 	     document.getElementById("edit-title").innerText = "Editing Appointment " + editId;
+	     document.getElementById("save-appointment-button").value = "Update Appointment";
 	     fillInFieldsFromEditedAppointment();
 	 } else {
 	     fillInFieldsFromQueryParams();
