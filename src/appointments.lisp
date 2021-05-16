@@ -130,13 +130,14 @@
 				       (gethash :|price| appmnt)
 				       (gethash :|currency| appmnt)))
 		      (description (format nil
-					   "Site: ~A~%Telephone: ~A~%Email: ~A~%Package: ~A ~A~%Photographer: ~A"
+					   "Site: ~A~%Telephone: ~A~%Email: ~A~%Package: ~A ~A~%Photographer: ~A~%Link: ~A"
 					   (gethash :|host| appmnt)
 					   (gethash :|telephone| appmnt)
 					   (gethash :|email| appmnt)
 					   (gethash :|photoshoot_type| appmnt)
 					   (gethash :|photoshoot_package| appmnt)
-					   (gethash :|photographer| appmnt)))
+					   (gethash :|photographer| appmnt)
+					   (format nil "https://bergmann-fotografin-muenchen.de/carm/static/viewappointment.html?id=~D" (gethash :|id| appmnt))))
 		      (insert-event-result (gcalendar-insert-event
 					    (gethash :|start_time| appmnt)
 					    (+ (gethash :|end_time| appmnt)
@@ -161,7 +162,7 @@
   (let ((unproc-appointments (db-fetch "SELECT id, email, email_text FROM appointments 
                                         WHERE processed_email = 0
                                         AND confirmed = 1
-                                        AND created_at < datetime(CURRENT_TIMESTAMP, '-30 minutes')")))
+                                        AND created_at < datetime(CURRENT_TIMESTAMP, '-3 hours')")))
     (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
 	  do (progn
 	       (send-mail (gethash :|email| appmnt)
@@ -177,7 +178,7 @@
                                         WHERE processed_email = 1 
                                         AND processed_email_reminder = 0
                                         AND confirmed = 1
-                                        AND created_at < datetime(CURRENT_TIMESTAMP, '-5 days')
+                                        AND created_at < datetime(CURRENT_TIMESTAMP, '-2 days')
                                         AND start_time - ? < 115200"  ; 1 day and 8 hours
 				        (list (get-universal-time)))))
     (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)

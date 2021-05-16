@@ -6,8 +6,8 @@
 	<script src="/carm/static/js/fe.js"> </script>
     </head>
     <script>
-     function cancelAppointment() {
-	 if (!confirm("Are you sure you want to cancel this appointment? This cannot be undone.")) {
+     function deleteAppointment() {
+	 if (!confirm("Are you sure you want to delete this appointment? This cannot be undone.")) {
 	     return;
 	 }
 	 var id = getParameters().id;
@@ -28,7 +28,7 @@
 	    <div id="requestcontainer" class="container">  
 	    </div>
 	    <div id="cancel-container" class="viewreq-container">
-		<div id="cancel-button" style="width: 90%;" class="viewreq-button" onclick="cancelAppointment();">Cancel Appointment</div>
+		<div id="cancel-button" style="width: 90%;" class="viewreq-button" onclick="deleteAppointment();">Delete Appointment</div>
 	    </div>
 	</div>
 	<script>
