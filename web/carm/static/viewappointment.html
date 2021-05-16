@@ -56,9 +56,12 @@
 	  }
 
 	 function updateRequestConfirmed(confirmed, id) {
-	     document.getElementById("confirmed-icon").innerText = confirmed ? "Confirmed" : "Unconfirmed";
-	     document.getElementById("confirmed-button").innerText = confirmed ? "Mark unconfirmed" : "Mark confirmed";
-	     document.getElementById("confirmed-button").onclick = function() {
+	     var confirmedIcon = document.getElementById("confirmed-icon");
+	     var confirmedButton = document.getElementById("confirmed-button");
+	     confirmedIcon.innerText = confirmed ? "Confirmed" : "Unconfirmed";
+	     confirmedIcon.style.backgroundColor = confirmed ? "#ebffec" : "#ffebeb";
+	     confirmedButton.innerText = confirmed ? "Mark unconfirmed" : "Mark confirmed";
+	     confirmedButton.onclick = function() {
 		 var method = confirmed ? "DELETE" : "PUT";
 		 var confirmedXHR = newXhrAuthReq(method, "/carm/api/v1/appointment/"+id+"/confirmed");
 		 confirmedXHR.send(null);
@@ -80,8 +83,13 @@
 		 request.emailText = request.emailText.substr(0, 400) + "...";
 		 request.photoshootType = capitalizeFirstLetter(request.photoshootType);
 		 request.photoshootPackage = capitalizeFirstLetter(request.photoshootPackage);
+		 request.processedEmail = request.processedEmail !== 0? parseTimestamp(request.processedEmail).toLocaleString() : "Not sent.";
+		 request.processedEmailReminder = request.processedEmailReminder !== 0 ? parseTimestamp(request.processedEmailReminder).toLocaleString() : "Not sent.";
+		 request.price = request.price + request.currency;
 		 updateRequestConfirmed(request.confirmed, request.id);
 		 delete request.id;
+		 delete request.confirmed;
+		 delete request.currency;
 		 for (var reqFieldName in request) {
 		     addField(reqsContainer, reqFieldName, request[reqFieldName], flip);
 		     flip = !flip;

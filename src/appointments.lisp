@@ -91,12 +91,12 @@
 ;;; INTERNAL
 
 (defun get-appointment (id)
-  (car (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, created_at FROM appointments WHERE id = ?;"
+  (car (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, processed_email, processed_email_reminder, created_at FROM appointments WHERE id = ?;"
 		 (list id))))
 
 (defun get-appointments (offset limit)
   (syslog :info "Getting appointment list with offset ~A limit ~A" offset limit)
-  (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, created_at FROM appointments ORDER BY created_at DESC LIMIT ? OFFSET ?;"
+  (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, created_at, processed_email, processed_email_reminder FROM appointments ORDER BY created_at DESC LIMIT ? OFFSET ?;"
 	    (list limit offset)))
 
 (defun create-appointment (host
@@ -187,8 +187,9 @@
 			  "Booking Confirmation"
 			  (gethash :|email_text| appmnt)
 			  :signature (get-email-signature))
-	       (db-exec "UPDATE appointments SET processed_email = 1 WHERE id = ?"
-			(list (gethash :|id| appmnt)))))))
+	       (db-exec "UPDATE appointments SET processed_email = ? WHERE id = ?"
+			(list (get-universal-time)
+			      (gethash :|id| appmnt)))))))
 
 (defun process-appointment-reminders-to-email ()
   (syslog :info "Processing appointment reminders to email.")
@@ -205,8 +206,9 @@
 			  "Booking Confirmation Reminder"
 			  (gethash :|email_text| appmnt)
 			  :signature (get-email-signature))
-	       (db-exec "UPDATE appointments SET processed_email_reminder = 1 WHERE id = ?"
-			(list (gethash :|id| appmnt)))))))
+	       (db-exec "UPDATE appointments SET processed_email_reminder = ? WHERE id = ?"
+			(list (get-universal-time)
+			      (gethash :|id| appmnt)))))))
 
 (defun set-appointment-confirmed (id confirmed)
   (not (zerop

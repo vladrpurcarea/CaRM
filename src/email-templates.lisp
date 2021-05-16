@@ -51,7 +51,7 @@
     (declare (ignore sec))
     (format nil "~2,'0d:~2,'0d" hour min)))
 (defun to-duration (seconds)
-  (let* ((hours (round (/ seconds 3600)))
+  (let* ((hours (floor (/ seconds 3600)))
 	 (minutes (round (/ (- seconds (* hours 3600))
 			    60))))
     (if (> hours 0)

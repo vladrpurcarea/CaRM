@@ -301,7 +301,14 @@
 	     }
 	     
 	 }
-	 
+
+	 function getEditId() {
+	     params = new URLSearchParams(window.location.search);
+	     if (params.has("edit")) {
+		 return params.get("edit");
+	     }
+	     return false;
+	 }   
 	</script>
 
     </head>
@@ -311,7 +318,8 @@
 	      <img src="/carm/static/img/logo.png" />
 	  </a>
 	</div>
-	<div id="main-container" >
+	<div id="main-container">
+	    <div id="edit-title" style="text-align: center" class="container-title"></div>
 	    <div id="left-container" >
 		<table id="appointment-table">
 		    <tr>
@@ -445,6 +453,13 @@
 		</div>
 	    </div>
 	</div>
-	<script>fillInFieldsFromQueryParams();updateHostFormFields();</script>
+	<script>
+	 var editId = getEditId();
+	 if (editId) {
+	     document.getElementById("edit-title").innerText = "Editing appointment " + editId;
+	 }
+	 fillInFieldsFromQueryParams();
+	 updateHostFormFields();
+	</script>
     </body>
 </html>
