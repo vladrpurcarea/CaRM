@@ -22,7 +22,7 @@
 	     var address = document.getElementById('address-input').value
 	     var photoshootType = document.getElementById('photoshoot-type-input').value
 	     var photoshootPackage = document.getElementById('photoshoot-package-input').value
-	     var confirmed = document.getElementById('confirmed-input').checked
+	     var confirmed = document.getElementById('confirmed-input').checked 
 
 	     return {
 		 host,
@@ -204,7 +204,11 @@
 	     appointment["emailText"] = document.getElementById('email-text-input').value
 	     
 	     var xhr = new XMLHttpRequest();
-	     var xhr = newXhrAuthReq("POST", "/carm/api/v1/appointment");
+	     if (editId) {
+		 xhr = newXhrAuthReq("PUT", "/carm/api/v1/appointment/" + editId);
+	     } else {
+		 xhr = newXhrAuthReq("POST", "/carm/api/v1/appointment");
+	     }
 	     xhr.onload = authFn(xhr, function () {
 		 if (xhr.status !== 204) {
 		     console.log("Error, status " + xhr.status);
@@ -302,13 +306,57 @@
 	     
 	 }
 
+	 function fillInFieldsFromEditedAppointment() {
+	     var xhr = newXhrAuthReq("GET", "/carm/api/v1/appointment/" + editId);
+	     xhr.onload = function() {
+		 var apmnt = JSON.parse(xhr.responseText);
+		 console.log(apmnt)
+		 var host = document.getElementById('host-input')
+		 var customerName = document.getElementById('customer-name-input')
+		 var telephone = document.getElementById('telephone-input')
+		 var email = document.getElementById('email-input')
+		 var startDateComponent = document.getElementById('start-date-input')
+		 var startTimeComponent = document.getElementById('start-time-input')
+		 var duration = document.getElementById('duration-input')
+		 var price = document.getElementById('price-input')
+		 var currency = document.getElementById('currency-input')
+		 var photographer = document.getElementById('photographer-input')
+		 var address = document.getElementById('address-input')
+		 var photoshootType = document.getElementById('photoshoot-type-input')
+		 var photoshootPackage = document.getElementById('photoshoot-package-input')
+		 var confirmed = document.getElementById('confirmed-input')
+		 var emailText = document.getElementById('email-text-input');
+
+		 host.value = apmnt.host
+		 customerName.value = apmnt.customerName
+		 telephone.value = apmnt.telephone
+		 email.value = apmnt.email
+		 price.value = apmnt.price
+		 currency.value = apmnt.currency
+		 photographer.value = apmnt.photographer
+		 address.value = apmnt.photoshootAddress
+		 photoshootType.value = apmnt.photoshootType
+		 photoshootPackage.value = apmnt.photoshootPackage
+		 confirmed.checked = (apmnt.confirmed !== 0)
+		 emailText.value = apmnt.emailText
+
+		 var d = parseTimestamp(apmnt.startTime)
+		 startDateComponent.value = d.getFullYear().toString() + '-' + (d.getMonth()+1).toString().padStart(2, '0') + '-' + d.getDate().toString().padStart(2, '0');
+		 startTimeComponent.value = d.getHours() + ':' + d.getMinutes()
+		 duration.value = apmnt.endTime - apmnt.startTime
+
+	     }
+	     xhr.send(null);
+	 }
+
 	 function getEditId() {
 	     params = new URLSearchParams(window.location.search);
 	     if (params.has("edit")) {
 		 return params.get("edit");
 	     }
 	     return false;
-	 }   
+	 }
+	 
 	</script>
 
     </head>
@@ -457,8 +505,10 @@
 	 var editId = getEditId();
 	 if (editId) {
 	     document.getElementById("edit-title").innerText = "Editing appointment " + editId;
+	     fillInFieldsFromEditedAppointment();
+	 } else {
+	     fillInFieldsFromQueryParams();
 	 }
-	 fillInFieldsFromQueryParams();
 	 updateHostFormFields();
 	</script>
     </body>

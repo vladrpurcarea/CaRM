@@ -28,6 +28,31 @@
 	(http-204-no-content))
     (type-error (e) (http-400-bad-request (write e :escape nil)))))
 
+(defroute put-appointment-route
+    ("/carm/api/v1/appointment/:id"
+     :method :PUT
+     :decorators (@log-errors @auth @json))
+    ()
+  (handler-case
+      (progn
+	(update-appointment (parse-integer id)
+			    (assert-type (gethash "host" (@json-body)) 'string)
+			    (assert-type (gethash "customerName" (@json-body)) 'string)
+			    (gethash "telephone" (@json-body))
+			    (assert-type (gethash "email" (@json-body)) 'string)
+			    (assert-type (gethash "emailText" (@json-body)) 'string)
+			    (assert-type (gethash "startTime" (@json-body)) 'fixnum)
+			    (assert-type (gethash "endTime" (@json-body)) 'fixnum)
+			    (assert-type (gethash "price" (@json-body)) 'real)
+			    (assert-type (gethash "currency" (@json-body)) 'string)
+			    (assert-type (gethash "photographer" (@json-body)) 'string)
+			    (assert-type (gethash "photoshootAddress" (@json-body)) 'string)
+			    (assert-type (gethash "photoshootType" (@json-body)) 'string)
+			    (assert-type (gethash "photoshootPackage" (@json-body)) 'string)
+			    :confirmed (if (gethash "confirmed" (@json-body)) 1 0))
+	(http-204-no-content))
+    (type-error (e) (http-400-bad-request (write e :escape nil)))))
+
 
 (defroute post-appointment-email-template-route
     ("/carm/api/v1/appointment/template"
@@ -119,6 +144,28 @@
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	   (list host customer-name telephone email email-text start-time end-time price currency photographer
 		 photoshoot-address photoshoot-type photoshoot-package confirmed)))
+
+(defun update-appointment (id
+			   host
+			   customer-name
+			   telephone
+			   email
+			   email-text
+			   start-time
+			   end-time
+			   price
+			   currency
+			   photographer
+			   photoshoot-address
+			   photoshoot-type
+			   photoshoot-package
+			   &key
+			     (confirmed nil))
+  (syslog :info "Updating appointment ~A" id)
+  (db-exec "UPDATE appointments SET host=?, customer_name=?, telephone=?, email=?, email_text=?, start_time=?, end_time=?, price=?, currency=?, photographer=?,photoshoot_address=?, photoshoot_type=?, photoshoot_package=?, confirmed=? WHERE id=?"
+	   (list host customer-name telephone email email-text start-time end-time price currency photographer
+		 photoshoot-address photoshoot-type photoshoot-package confirmed id)))
+
 
 (defun cancel-appointment (appt-id)
   (let ((gcalendar-id (getf (car

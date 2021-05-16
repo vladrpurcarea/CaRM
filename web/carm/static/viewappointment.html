@@ -16,6 +16,10 @@
 
 	 xhr.send(null);
      }
+     function editAppointment() {
+	 var id = getParameters().id;
+	 window.location.href = `/carm/static/createappointment.html?edit=${id}`;
+     }
     </script>
     <body>
 	<div class="logocontainer" >
@@ -32,6 +36,9 @@
 		<div id="confirmed-button" class="option-button"  style="width: 55%" onclick="alert('hi')">
 		    Confirm
 		</div>
+	    </div>
+	    <div id="edit-container" class="viewreq-container">
+		<div id="edit-button" style="width: 90%;" class="viewreq-button" onclick="editAppointment();">Edit Appointment</div>
 	    </div>
 	    <div id="cancel-container" class="viewreq-container">
 		<div id="cancel-button" style="width: 90%;" class="viewreq-button" onclick="deleteAppointment();">Delete Appointment</div>
