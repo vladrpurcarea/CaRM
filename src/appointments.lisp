@@ -70,15 +70,33 @@
     ()
   (cancel-appointment id))
 
+(defroute put-appointment-confirmed-route
+    ("/carm/api/v1/appointment/:id/confirmed"
+     :method :PUT
+     :decorators (@log-errors @auth))
+    ()
+  (if (set-appointment-confirmed id t)
+      (http-204-no-content)
+      (http-404-not-found)))
+
+(defroute delete-appointment-confirmed-route
+    ("/carm/api/v1/appointment/:id/confirmed"
+     :method :DELETE
+     :decorators (@log-errors @auth))
+    ()
+  (if (set-appointment-confirmed id nil)
+      (http-204-no-content)
+      (http-404-not-found)))
+
 ;;; INTERNAL
 
 (defun get-appointment (id)
-  (car (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, created_at FROM appointments WHERE id = ?;"
+  (car (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, created_at FROM appointments WHERE id = ?;"
 		 (list id))))
 
 (defun get-appointments (offset limit)
   (syslog :info "Getting appointment list with offset ~A limit ~A" offset limit)
-  (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, created_at FROM appointments ORDER BY created_at DESC LIMIT ? OFFSET ?;"
+  (db-fetch "SELECT id, host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, created_at FROM appointments ORDER BY created_at DESC LIMIT ? OFFSET ?;"
 	    (list limit offset)))
 
 (defun create-appointment (host
@@ -189,3 +207,10 @@
 			  :signature (get-email-signature))
 	       (db-exec "UPDATE appointments SET processed_email_reminder = 1 WHERE id = ?"
 			(list (gethash :|id| appmnt)))))))
+
+(defun set-appointment-confirmed (id confirmed)
+  (not (zerop
+	(db-exec "UPDATE appointments SET confirmed = ? WHERE id = ?"
+		 (list (if confirmed 1 0)
+		       id)))))
+

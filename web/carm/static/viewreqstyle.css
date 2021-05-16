@@ -48,7 +48,7 @@
 .viewreq-button {
     display: flex;
     margin: 1.8em auto;
-    padding: 1.2em;
+    padding: 1.2em 1.8em;
     color: #494949 !important;
     background: #ffffff;
     border: 0.1em solid #c9c9c9 !important;
