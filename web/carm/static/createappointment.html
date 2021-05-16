@@ -364,6 +364,7 @@
 	 function confirmButton() {
 	     var confirmed = document.getElementById("confirmed-input").checked
 	     var button = document.getElementById("save-appointment-button")
+	     button.style.visibility = "visible"
 	     if (editId) {
 		 button.value = "Update Appointment"
 		 return
@@ -505,9 +506,10 @@
 			</th>
 		    </tr>
 		    <tr>
-			<th>Confirmed</th>
+			<th>Status</th>
 			<th>
-			    <input type="checkbox" id="confirmed-input" name="confirmed-input" onclick="confirmButton()">
+			    <input type="radio" id="unconfirmed-input" name="confirmed-input" value="unconfirm" onclick="confirmButton()"> UNCONFIRMED
+			    <input type="radio" id="confirmed-input" name="confirmed-input" value="confirm" onclick="confirmButton()"> CONFIRMED
 			</th>
 		    </tr>
 		    
@@ -519,7 +521,7 @@
 	    <div id="right-container" >
 		<textarea id="email-text-input" name="email-text-input" ></textarea>
 		<div style="height: 10%; width: 100%;" >
-		    <input type="button" value="Save Appointment" id="save-appointment-button" class="button" onclick="saveAppointment()">
+		    <input style="visibility: hidden" type="button" value="Save Appointment" id="save-appointment-button" class="button" onclick="saveAppointment()">
 		</div>
 	    </div>
 	</div>
