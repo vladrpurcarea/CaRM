@@ -162,19 +162,28 @@
 			   &key
 			     (confirmed nil))
   (syslog :info "Updating appointment ~A" id)
-  (db-exec "UPDATE appointments SET host=?, customer_name=?, telephone=?, email=?, email_text=?, start_time=?, end_time=?, price=?, currency=?, photographer=?,photoshoot_address=?, photoshoot_type=?, photoshoot_package=?, confirmed=? WHERE id=?"
+  (reset-gcalendar id)
+  (db-exec "UPDATE appointments SET host=?, customer_name=?, telephone=?, email=?, email_text=?, start_time=?, end_time=?, price=?, currency=?, photographer=?,photoshoot_address=?, photoshoot_type=?, photoshoot_package=?, confirmed=?, processed_calendar=0 WHERE id=?"
 	   (list host customer-name telephone email email-text start-time end-time price currency photographer
 		 photoshoot-address photoshoot-type photoshoot-package confirmed id)))
 
 
+(defun reset-gcalendar (id)
+  (delete-gcalendar id)
+  (db-exec "UPDATE appointments SET processed_calendar=0 WHERE id=?" (list id)))
+
 (defun cancel-appointment (appt-id)
+  (delete-gcalendar appt-id)
+  (db-exec "DELETE FROM appointments WHERE id = ?" (list appt-id)))
+
+(defun delete-gcalendar (appt-id)
   (let ((gcalendar-id (getf (car
 			     (db-fetch "SELECT gcalendar_id FROM appointments WHERE id = ?"
 				       (list appt-id)))
 			    :|gcalendar_id|)))
     (when gcalendar-id
-      (gcalendar-delete-event gcalendar-id))
-    (db-exec "DELETE FROM appointments WHERE id = ?" (list appt-id))))
+      (gcalendar-delete-event gcalendar-id)
+      (db-exec "UPDATE appointments SET gcalendar_id = NULL WHERE id = ?" (list appt-id)))))
 
 (defun process-appointments ()
   (process-appointments-to-gcalendar)
@@ -188,7 +197,7 @@
                        photographer, photoshoot_type, photoshoot_package, confirmed FROM appointments WHERE processed_calendar = 0")))
       (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
 	    do (let* ((summary (format nil "~A~A ~A ~A ~F~A"
-				       (if (gethash :|confirmed| appmnt) "(?) " "")
+				       (if (= (gethash :|confirmed| appmnt) 0) "(?) " "")
 				       (gethash :|customer_name| appmnt)
 				       (str:capitalize (gethash :|photoshoot_type| appmnt))
 				       (str:capitalize (gethash :|photoshoot_package| appmnt))
@@ -261,5 +270,6 @@
   (not (zerop
 	(db-exec "UPDATE appointments SET confirmed = ? WHERE id = ?"
 		 (list (if confirmed 1 0)
-		       id)))))
+		       id))))
+  (reset-gcalendar id))
 
