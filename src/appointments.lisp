@@ -10,23 +10,22 @@
      :decorators (@log-errors @auth @json))
     ()
   (handler-case
-      (progn
-	(create-appointment (assert-type (gethash "host" (@json-body)) 'string)
-			    (assert-type (gethash "customerName" (@json-body)) 'string)
-			    (gethash "telephone" (@json-body))
-			    (assert-type (gethash "email" (@json-body)) 'string)
-			    (assert-type (gethash "emailText" (@json-body)) 'string)
-			    (assert-type (gethash "startTime" (@json-body)) 'fixnum)
-			    (assert-type (gethash "endTime" (@json-body)) 'fixnum)
-			    (assert-type (gethash "price" (@json-body)) 'real)
-			    (assert-type (gethash "currency" (@json-body)) 'string)
-			    (assert-type (gethash "photographer" (@json-body)) 'string)
-			    (assert-type (gethash "photoshootAddress" (@json-body)) 'string)
-			    (assert-type (gethash "photoshootType" (@json-body)) 'string)
-			    (assert-type (gethash "photoshootPackage" (@json-body)) 'string)
-			    (assert-type (gethash "gcalendarNotes" (@json-body)) 'string)
-			    :confirmed (if (gethash "confirmed" (@json-body)) 1 0))
-	(http-204-no-content))
+      (write-to-string
+       (create-appointment (assert-type (gethash "host" (@json-body)) 'string)
+			   (assert-type (gethash "customerName" (@json-body)) 'string)
+			   (gethash "telephone" (@json-body))
+			   (assert-type (gethash "email" (@json-body)) 'string)
+			   (assert-type (gethash "emailText" (@json-body)) 'string)
+			   (assert-type (gethash "startTime" (@json-body)) 'fixnum)
+			   (assert-type (gethash "endTime" (@json-body)) 'fixnum)
+			   (assert-type (gethash "price" (@json-body)) 'real)
+			   (assert-type (gethash "currency" (@json-body)) 'string)
+			   (assert-type (gethash "photographer" (@json-body)) 'string)
+			   (assert-type (gethash "photoshootAddress" (@json-body)) 'string)
+			   (assert-type (gethash "photoshootType" (@json-body)) 'string)
+			   (assert-type (gethash "photoshootPackage" (@json-body)) 'string)
+			   (assert-type (gethash "gcalendarNotes" (@json-body)) 'string)
+			   :confirmed (if (gethash "confirmed" (@json-body)) 1 0)))
     (type-error (e) (http-400-bad-request (write e :escape nil)))))
 
 (defroute put-appointment-route
@@ -115,6 +114,14 @@
       (http-204-no-content)
       (http-404-not-found)))
 
+(defroute post-appointment-send-instant
+    ("/carm/api/v1/appointment/:id/send-email"
+     :method :POST
+     :decorators (@log-errors @auth))
+    ()
+  (process-appointment-to-email-instant id)
+  (http-204-no-content))
+
 ;;; INTERNAL
 
 (defun get-appointment (id)
@@ -146,7 +153,8 @@
   (db-exec "INSERT INTO appointments (host, customer_name, telephone, email, email_text, start_time, end_time, price, currency, photographer,photoshoot_address, photoshoot_type, photoshoot_package, confirmed, gcalendar_notes) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	   (list host customer-name telephone email email-text start-time end-time price currency photographer
-		 photoshoot-address photoshoot-type photoshoot-package confirmed gcalendar-notes)))
+		 photoshoot-address photoshoot-type photoshoot-package confirmed gcalendar-notes))
+  (cadar (db-fetch "SELECT last_insert_rowid();")))
 
 (defun update-appointment (id
 			   host
@@ -244,19 +252,32 @@
                                         AND confirmed = 1
                                         AND created_at < datetime(CURRENT_TIMESTAMP, '-3 hours')")))
     (loop for appmnt in (mapcar #'plist-hash-table unproc-appointments)
-	  do (progn
-	       (send-mail (gethash :|email| appmnt)
-			  "Booking Confirmation"
-			  (gethash :|email_text| appmnt)
-			  :signature (get-email-signature))
-	       (send-mail (replication-email-for-domain
-			   (gethash :|host| appmnt))
-			  "Booking Confirmation"
-			  (gethash :|email_text| appmnt)
-			  :signature (get-email-signature))
-	       (db-exec "UPDATE appointments SET processed_email = ? WHERE id = ?"
-			(list (get-universal-time)
-			      (gethash :|id| appmnt)))))))
+	  do (send-appointment-emails appmnt))))
+
+(defun process-appointment-to-email-instant (id)
+  (syslog :info "Processing appointment ~A instantly to email." id)
+  (let ((appmnt (plist-hash-table
+		 (db-fetch-one "SELECT id, email, email_text, host FROM appointments
+                                        WHERE processed_email = 0
+                                        AND id = ?"
+			       :args (list id)))))
+    (send-appointment-emails appmnt)
+    (db-exec "UPDATE appointments SET confirmed = 1 WHERE id = ?"
+	     (list (gethash :|id| appmnt)))))
+
+(defun send-appointment-emails (appmnt)
+  (send-mail (gethash :|email| appmnt)
+	     "Booking Confirmation"
+	     (gethash :|email_text| appmnt)
+	     :signature (get-email-signature))
+  (send-mail (replication-email-for-domain
+	      (gethash :|host| appmnt))
+	     "Booking Confirmation"
+	     (gethash :|email_text| appmnt)
+	     :signature (get-email-signature))
+  (db-exec "UPDATE appointments SET processed_email = ? WHERE id = ?"
+	   (list (get-universal-time)
+		 (gethash :|id| appmnt))))
 
 (defun process-appointment-reminders-to-email ()
   (syslog :info "Processing appointment reminders to email.")

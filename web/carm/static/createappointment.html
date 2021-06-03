@@ -201,7 +201,7 @@
 	     xhr.send(JSON.stringify(appointment));
 	 }
 	 
-	 function saveAppointment() {
+	 function saveAppointment(sendNow) {
 	     var appointment = readAppointment();
 	     appointment["emailText"] = document.getElementById('email-text-input').value
 	     
@@ -212,11 +212,18 @@
 		 xhr = newXhrAuthReq("POST", "/carm/api/v1/appointment");
 	     }
 	     xhr.onload = authFn(xhr, function () {
-		 if (xhr.status !== 204) {
+		 if (xhr.status !== 200 && xhr.status !== 204) {
 		     console.log("Error, status " + xhr.status);
 		     return;
 		 }
+		 id = xhr.responseText;
+		 console.log(`id: ${id}`)
+		 if (sendNow) {
+		     var sendXhr = newXhrAuthReq("POST", `/carm/api/v1/appointment/${id}/send-email`);
+		     sendXhr.send(null);
+		 }
 		 alert('Saved')
+		 window.location.href=`/carm/static/viewappointment.html?id=${id}`;
 	     })
 
 	     xhr.send(JSON.stringify(appointment));
@@ -377,7 +384,15 @@
 		 button.value = "Update Appointment"
 		 return
 	     }
-	     button.value = !confirmed ? "Save Appointment" : "Save Appointment & Send Email"
+	     if (confirmed) {
+		 button.value = "Save Appointment";
+		 var sendNowButton = document.getElementById("send-now-button")
+		 sendNowButton.style.visibility = "visible";
+	     } else {
+		 var sendNowButton = document.getElementById("send-now-button")
+		 sendNowButton.style.visibility = "hidden";
+		 button.value = "Save Appointment & Send Email"
+	     }
 	 }
 	 
 	</script>
@@ -528,8 +543,9 @@
 	    </div>
 	    <div id="right-container" >
 		<textarea id="email-text-input" name="email-text-input" ></textarea>
-		<div style="height: 10%; width: 100%;" >
-		    <input style="visibility: hidden" type="button" value="Save Appointment" id="save-appointment-button" class="button" onclick="saveAppointment()">
+		<div style="height: 10%; width: 100%;display:flex;align-content:center;justify-content:center" >
+		    <input style="visibility: hidden" type="button" value="Save Appointment" id="save-appointment-button" class="button" onclick="saveAppointment(false)">
+		    <input style="visibility: hidden" type="button" value="Save Appointment & Send Email Now" id="send-now-button" class="button" onclick="saveAppointment(true)">
 		</div>
 	    </div>
 	</div>
@@ -538,6 +554,7 @@
 	 if (editId) {
 	     document.getElementById("edit-title").innerText = "Editing Appointment " + editId;
 	     document.getElementById("save-appointment-button").value = "Update Appointment";
+	     document.getElementById("save-appointment-button").parentNode.style.width = "100%";
 	     fillInFieldsFromEditedAppointment();
 	 } else {
 	     fillInFieldsFromQueryParams();
