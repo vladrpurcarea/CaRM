@@ -1,25 +1,17 @@
 Hallo ${customerName},
 
 Ich freue mich sehr darauf, dein Familien-Shooting vom ${date} zu bestätigen.
+
 ZEIT: ${startTime} - ${endTime}
-ORT: ${photoshootAddress}
-OUTFITS: Ich bitte dich darum, die Outfits so zusammenzustellen, dass sie auf den Bildern ästhetisch
-zusammen wirken. Als Inspiration kannst du gerne einen Blick auf die folgende Zusammenstellung
-werfen: https://www.pinterest.de/carmenbergmann/outfitsstudiofamilyshooting/
+ORT: ${photoshootAddress} BITTE BEACHTEN SIE! Manchmal zeigt Google noch die Adresse unseres alten Studios an (Kirchenstraße). Dort befindet sich unser Studio nicht mehr. Unsere neue Adresse ist: ${photoshootAddress}.
+OUTFITS: Ich bitte dich darum, die Outfits so zusammenzustellen, dass sie auf den Bildern ästhetisch zusammen wirken. Als Inspiration kannst du gerne einen Blick auf die folgende Zusammenstellung werfen: https://www.pinterest.de/carmenbergmann/outfitsstudiofamilyshooting/
 PREIS: ${price} ${currency}
 PREIS BEINHALTET: Fotoshooting (${duration}) + ${digitalPhotosNum} Digitalbilder
-ZUSÄTZLICHE ZEIT: 45 EURO/30 Minuten
+ZUSÄTZLICHE ZEIT: 45 EUR/30 Minuten
 IHR FOTOGRAF wird ${photographer} sein.
-ZAHLUNG UND LIEFERUNG: Am Ende des Shootings erhältst du eine Rechnung. Die Rechnung kann
-mit Karte gezahlt werden (EC-Karte wird bevorzugt, Kreditkarte ist ebenfalls möglich).
-Sobald die Zahlung eingegangen ist, werden wir eine Auswahl der Bilder treffen und für dich eine
-Galerie eröffnen, in der du die besten Bilder deines Fotoshootings ansehen kannst. Dieser Vorgang
-dauert 21 Tage.
+ZAHLUNG UND LIEFERUNG: Am Ende des Shootings erhältst du eine Rechnung. Die Rechnung kann mit Karte gezahlt werden (EC-Karte wird bevorzugt, Kreditkarte ist ebenfalls möglich).
+Sobald die Zahlung eingegangen ist, werden wir eine Auswahl der Bilder treffen und für dich eine Galerie eröffnen, in der du die besten Bilder deines Fotoshootings ansehen kannst. Dieser Vorgang dauert 21 Tage.
 Deine Galerie wird am ${galleryOpeningDate} für dich geöffnet.
-Darauffolgend kannst du dir die Bilder aus der Galerie aussuchen, die dir am besten gefallen. Falls du
-mehr Bilder auswählst, als in deinem Paket enthalten sind, wird eine zusätzliche Rechnung erstellt. 7
-Tage nachdem du deine finale Auswahl getroffen hast und ggf. die zweite Rechnung bezahlt wurde,
-wirst du deine endgültigen Bilder über einen Download-Link in hochauflösender Resolution erhalten.
-Bitte speichere dir meine Telefonnummer ein. Im Falle von kurzfristig notwendiger Kommunikation
-kann diese hilfreich sein.
+Darauffolgend kannst du dir die Bilder aus der Galerie aussuchen, die dir am besten gefallen. Falls du mehr Bilder auswählst, als in deinem Paket enthalten sind, wird eine zusätzliche Rechnung erstellt. 7 Tage nachdem du deine finale Auswahl getroffen hast und ggf. die zweite Rechnung bezahlt wurde, wirst du deine endgültigen Bilder über einen Download-Link in hochauflösender Resolution erhalten. Bitte speichere dir meine Telefonnummer ein. Im Falle von kurzfristig notwendiger Kommunikation kann diese hilfreich sein.
+
 Mit den allerbesten Grüßen und bis bald,
