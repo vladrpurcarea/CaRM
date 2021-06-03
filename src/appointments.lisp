@@ -191,7 +191,8 @@
 
 (defun process-appointments ()
   (process-appointments-to-gcalendar)
-  (process-appointments-to-email))
+  (process-appointments-to-email)
+  (process-appointment-reminders-to-email))
 
 (defun process-appointments-to-gcalendar ()
   (when *appointment-calendar-id*
@@ -260,7 +261,7 @@
 (defun process-appointment-reminders-to-email ()
   (syslog :info "Processing appointment reminders to email.")
   (let ((unproc-appointments (db-fetch "SELECT id, email, email_text, host FROM appointments
-                                        WHERE processed_email = 1 
+                                        WHERE processed_email != 0
                                         AND processed_email_reminder = 0
                                         AND confirmed = 1
                                         AND created_at < datetime(CURRENT_TIMESTAMP, '-2 days')
