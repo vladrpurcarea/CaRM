@@ -70,6 +70,6 @@
 (defun replace-in-template (template key val)
   (let* ((regex (str:concat "\\$\\{" key "\\}")))
     (multiple-value-bind (new-template replaced-p)
-	(ppcre:regex-replace regex template val)
+	(ppcre:regex-replace-all regex template val)
       (declare (ignore replaced-p))
       new-template)))
