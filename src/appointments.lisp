@@ -238,7 +238,7 @@
 
 (defun process-appointments-to-email ()
   (syslog :info "Processing appointments to email.")
-  (let ((unproc-appointments (db-fetch "SELECT id, email, email_text FROM appointments 
+  (let ((unproc-appointments (db-fetch "SELECT id, email, email_text, host FROM appointments
                                         WHERE processed_email = 0
                                         AND confirmed = 1
                                         AND created_at < datetime(CURRENT_TIMESTAMP, '-3 hours')")))
@@ -248,13 +248,18 @@
 			  "Booking Confirmation"
 			  (gethash :|email_text| appmnt)
 			  :signature (get-email-signature))
+	       (send-mail (replication-email-for-domain
+			   (gethash :|host| appmnt))
+			  "Booking Confirmation"
+			  (gethash :|email_text| appmnt)
+			  :signature (get-email-signature))
 	       (db-exec "UPDATE appointments SET processed_email = ? WHERE id = ?"
 			(list (get-universal-time)
 			      (gethash :|id| appmnt)))))))
 
 (defun process-appointment-reminders-to-email ()
   (syslog :info "Processing appointment reminders to email.")
-  (let ((unproc-appointments (db-fetch "SELECT id, email, email_text FROM appointments 
+  (let ((unproc-appointments (db-fetch "SELECT id, email, email_text, host FROM appointments
                                         WHERE processed_email = 1 
                                         AND processed_email_reminder = 0
                                         AND confirmed = 1
@@ -267,9 +272,20 @@
 			  "Booking Confirmation Reminder"
 			  (gethash :|email_text| appmnt)
 			  :signature (get-email-signature))
+	       (send-mail (replication-email-for-domain
+			   (gethash :|host| appmnt))
+			  "Booking Confirmation Reminder"
+			  (gethash :|email_text| appmnt)
+			  :signature (get-email-signature))
 	       (db-exec "UPDATE appointments SET processed_email_reminder = ? WHERE id = ?"
 			(list (get-universal-time)
 			      (gethash :|id| appmnt)))))))
+
+(defun replication-email-for-domain (domain)
+  (str:string-case domain
+    ("bergmann-fotografin-muenchen.de" "fotostudio@carmenbergmann.de")
+    ("donna-bellini-fotografie-muenchen.de" "fotostudio@donnabellini.de")
+    ("donna-bellini-fotografie-berlin.de" "larisa@donnabellini.de")))
 
 (defun set-appointment-confirmed (id confirmed)
   (not (zerop
