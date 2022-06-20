@@ -307,7 +307,7 @@
   (str:string-case domain
     ("bergmann-fotografin-muenchen.de" "fotostudio@carmenbergmann.de")
     ("donna-bellini-fotografie-muenchen.de" "muenchen@donnabellini.de")
-    ("donna-bellini-fotografie-berlin.de" "berlin@donnabellini.de")))
+    ("donna-bellini-fotografie-berlin.de" "larisa@donnabellini.de")))
 
 (defun set-appointment-confirmed (id confirmed)
   (not (zerop
