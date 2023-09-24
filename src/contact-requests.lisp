@@ -171,11 +171,12 @@
 	      for subject = (format nil "~A: ~A"
 				    (host->sheet-name (getf req :|host|))
 				    (gethash "name" data))
-	      for message = (format nil "Site: ~A~%Name: ~A~%Phone: ~A~%Email: ~A~%Message: ~A~%"
+	      for message = (format nil "Site: ~A~%Name: ~A~%Phone: ~A~%Email: ~A~%Package: ~A~%Message: ~A~%"
 				    (getf req :|host|)
 				    (gethash "name" data)
 				    (gethash "phone" data)
 				    (gethash "email" data)
+            (gethash "package" data)
 				    (gethash "message" data))
 	      do (progn
 		(send-mail to subject message)
