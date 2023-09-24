@@ -176,6 +176,7 @@
 				    (gethash "name" data)
 				    (gethash "phone" data)
 				    (gethash "email" data)
+            (gethash "category" data)
             (gethash "package" data)
             (gethash "date" data)
             (gethash "pregnancyWeek" data)
