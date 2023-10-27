@@ -137,7 +137,12 @@
 			      (gethash "email" data)
 			      (to-gsheets-date (gethash "timestamp" x))
 			      ""
-			      (gethash "message" data))))
+			      (gethash "message" data)
+						(gethash "voucher-type" data)
+						(gethash "voucher-package" data)
+						(gethash "von" data)
+						(gethash "fur" data)
+						(gethash "delivery-address" data))))
 		    unprocessed-reqs)))
       (when unprocessed-reqs
 	(syslog :info "~D contact request(s) to sync to spreadsheets." (length unprocessed-reqs))
@@ -171,7 +176,7 @@
 	      for subject = (format nil "~A: ~A"
 				    (host->sheet-name (getf req :|host|))
 				    (gethash "name" data))
-	      for message = (format nil "Site: ~A~%Name: ~A~%Phone: ~A~%Email: ~A~%Category: ~A~%Package: ~A~%Date: ~A~%Pregnancy Week: ~A~%Newborn Birth Date: ~A~%Makeup: ~A~%Message: ~A~%"
+	      for message = (format nil "Site: ~A~%Name: ~A~%Phone: ~A~%Email: ~A~%Category: ~A~%Package: ~A~%Date: ~A~%Pregnancy Week: ~A~%Newborn Birth Date: ~A~%Makeup: ~A~%Message: ~A~%Voucher Type: ~A~%Voucher Package: ~A~%From: ~A~%To: ~A~%Delivery Address: ~A~%"
 				    (getf req :|host|)
 				    (gethash "name" data)
 				    (gethash "phone" data)
@@ -183,6 +188,11 @@
             (gethash "birthDate" data)
             (gethash "makeup" data)
 				    (gethash "message" data))
+				    (gethash "voucher-type" data))
+				    (gethash "voucher-package" data))
+				    (gethash "von" data))
+				    (gethash "fur" data))
+				    (gethash "delivery-address" data))
 	      do (progn
 		(send-mail to subject message)
 		(db-exec "UPDATE contact_requests SET processed_email = 1 WHERE id = ?"
