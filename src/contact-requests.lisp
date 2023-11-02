@@ -187,7 +187,7 @@
             (gethash "pregnancyWeek" data)
             (gethash "birthDate" data)
             (gethash "makeup" data)
-				    (gethash "message" data))
+				    (gethash "message" data)
 				    (gethash "voucher-type" data)
 				    (gethash "voucher-package" data)
 				    (gethash "von" data)
