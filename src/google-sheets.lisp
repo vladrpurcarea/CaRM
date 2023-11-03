@@ -69,7 +69,7 @@
 			 `(("sheetId" . ,(host->sheet-id host))
 			   ("startRowIndex" . 1)
 			   ("startColumnIndex" . 0)
-			   ("endColumnIndex" . 9))))
+			   ("endColumnIndex" . 20))))
 		    ("sortSpecs"
 		     . (,(alist-hash-table
 			  `(("dimensionIndex" . 3)
