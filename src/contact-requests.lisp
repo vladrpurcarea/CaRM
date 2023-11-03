@@ -193,7 +193,7 @@
 				    (gethash "voucher-package" data)
 				    (gethash "von" data)
 				    (gethash "fur" data)
-				    (gethash "delivery-ddress" data))
+				    (gethash "delivery-address" data))
 	      do (progn
 		(send-mail to subject message)
 		(db-exec "UPDATE contact_requests SET processed_email = 1 WHERE id = ?"
