@@ -144,7 +144,8 @@
 						(gethash "von" data)
 						(gethash "fur" data)
 						(gethash "delivery-address" data)
-       			(gethash "category"))))
+       			(gethash "category" data)
+       			(gethash "language" data))))
 		    unprocessed-reqs)))
       (when unprocessed-reqs
 	(syslog :info "~D contact request(s) to sync to spreadsheets." (length unprocessed-reqs))
@@ -194,7 +195,8 @@
 				    (gethash "voucher-package" data)
 				    (gethash "von" data)
 				    (gethash "fur" data)
-				    (gethash "delivery-address" data))
+				    (gethash "delivery-address" data)
+				    (gethash "language" data))
 	      do (progn
 		(send-mail to subject message)
 		(db-exec "UPDATE contact_requests SET processed_email = 1 WHERE id = ?"
