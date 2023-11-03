@@ -140,6 +140,7 @@
 			      (gethash "message" data)
 						(gethash "voucher-type" data)
 						(gethash "voucher-package" data)
+						(gethash "makeup" data)
 						(gethash "von" data)
 						(gethash "fur" data)
 						(gethash "delivery-address" data))))
