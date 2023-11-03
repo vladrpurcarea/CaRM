@@ -143,7 +143,8 @@
 						(gethash "makeup" data)
 						(gethash "von" data)
 						(gethash "fur" data)
-						(gethash "delivery-address" data))))
+						(gethash "delivery-address" data)
+       			(gethash "category"))))
 		    unprocessed-reqs)))
       (when unprocessed-reqs
 	(syslog :info "~D contact request(s) to sync to spreadsheets." (length unprocessed-reqs))
