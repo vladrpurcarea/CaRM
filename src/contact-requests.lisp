@@ -179,7 +179,7 @@
 	      for subject = (format nil "~A: ~A"
 				    (host->sheet-name (getf req :|host|))
 				    (gethash "name" data))
-	      for message = (format nil "Site: ~A~%Name: ~A~%Phone: ~A~%Email: ~A~%Category: ~A~%Package: ~A~%Date: ~A~%Pregnancy Week: ~A~%Newborn Birth Date: ~A~%Makeup: ~A~%Message: ~A~%Voucher Type: ~A~%Voucher Package: ~A~%From: ~A~%To: ~A~%Delivery Address: ~A~%"
+	      for message = (format nil "Site: ~A~%Name: ~A~%Phone: ~A~%Email: ~A~%Category: ~A~%Package: ~A~%Date: ~A~%Pregnancy Week: ~A~%Newborn Birth Date: ~A~%Makeup: ~A~%Message: ~A~%Voucher Type: ~A~%Voucher Package: ~A~%From: ~A~%To: ~A~%Delivery Address: ~A~%Language: ~A~%"
 				    (getf req :|host|)
 				    (gethash "name" data)
 				    (gethash "phone" data)
